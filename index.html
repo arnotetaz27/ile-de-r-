@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>L'Écho du Bois — Île de Ré</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="apple-touch-icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -215,13 +215,96 @@
     border-radius:20px;
     white-space:nowrap;
   }
-  .martiniere-statut.ouvert{background:#3DDC64;color:#0d2b12;}
-  .martiniere-statut.ferme{background:rgba(193,88,122,0.12);color:var(--rose-tremiere);}
+  .martiniere-statut.ouvert{background:#00E676;color:#0d2b12;}
+  .martiniere-statut.ferme{background:var(--rose-tremiere);color:#fff;}
   .martiniere-horaire{
     font-family:'IBM Plex Mono', monospace;
     font-size:13px;
     color:var(--encre);
     margin-top:6px;
+  }
+
+  /* ---------- RESTOS COUP DE COEUR ---------- */
+  .restos-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .resto-carte{
+    display:block;
+    background:#fff;
+    border:1px solid var(--sable);
+    border-radius:14px;
+    padding:14px;
+    text-decoration:none;
+    color:inherit;
+    box-shadow:0 2px 0 var(--ombre);
+  }
+  .resto-carte.pas-de-tel{cursor:default;}
+  .resto-nom{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:15px;
+    color:var(--vert-re-dark);
+    line-height:1.25;
+  }
+  .resto-ville{
+    font-size:11.5px;
+    color:#77806f;
+    margin-top:3px;
+  }
+  .resto-statut{
+    display:inline-block;
+    margin-top:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    font-weight:700;
+    padding:3px 9px;
+    border-radius:20px;
+  }
+  .resto-statut.ouvert{background:#00E676;color:#0d2b12;}
+  .resto-statut.ferme{background:var(--rose-tremiere);color:#fff;}
+
+  /* ---------- RESTOS COUP DE COEUR ---------- */
+  .restos-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .resto-carte{
+    background:#fff;
+    border:1px solid var(--sable);
+    border-radius:14px;
+    padding:14px;
+    box-shadow:0 2px 0 var(--ombre);
+    text-decoration:none;
+    color:inherit;
+    display:block;
+    transition:transform .15s ease;
+  }
+  a.resto-carte:active{transform:scale(0.97);}
+  .resto-nom{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:15px;
+    color:var(--vert-re-dark);
+    line-height:1.25;
+  }
+  .resto-ville{
+    font-size:11.5px;
+    color:#77806f;
+    margin-top:2px;
+  }
+  .resto-bas{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:10px;
+  }
+  .resto-appel{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    color:#9aa093;
   }
 
   /* ---------- NEWS ---------- */
@@ -328,9 +411,9 @@
   <section id="meteo">
     <div class="section-head">
       <span class="section-num">01</span>
-      <h2 class="section-title">Météo</h2>
+      <h2 class="section-title">Météo — Le Bois-Plage-en-Ré</h2>
     </div>
-    <p class="section-note">Prévisions à 7 jours.</p>
+    <p class="section-note">Prévisions à 7 jours, données Open-Meteo, mises à jour à chaque ouverture.</p>
     <div class="meteo-scroll" id="meteo-container">
       <div class="meteo-loading">Récupération de la météo…</div>
     </div>
@@ -351,9 +434,9 @@
   <section id="marees">
     <div class="section-head">
       <span class="section-num">02</span>
-      <h2 class="section-title">Marées</h2>
+      <h2 class="section-title">Marées — Le Bois-Plage-en-Ré</h2>
     </div>
-    <p class="section-note">Pleines et basses mers estimées sur 7 jours.</p>
+    <p class="section-note">Pleines et basses mers <strong>estimées</strong> sur 7 jours (Open-Meteo Marine, modèle ~8 km) — pratique pour un coup d'œil, mais approximatif. Pour l'heure exacte (SHOM), vérifie sur <a href="https://maree.info/126" target="_blank" rel="noopener" style="color:var(--vert-re-dark);">maree.info →</a></p>
     <div class="meteo-scroll" id="marees-container">
       <div class="maree-loading">Calcul des marées…</div>
     </div>
@@ -388,6 +471,27 @@
 
   <div class="tremiere">
     <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
+      <path d="M2 16 C 40 28, 80 8, 110 20 S 180 30, 218 12" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <g fill="#C1587A">
+        <circle cx="45" cy="22" r="3.6"/><circle cx="75" cy="12" r="4.4"/>
+        <circle cx="115" cy="19" r="3.4"/><circle cx="150" cy="26" r="4.2"/>
+        <circle cx="185" cy="16" r="3.6"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ================= RESTOS COUP DE COEUR ================= -->
+  <section id="restos">
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Nos restos coup de cœur</h2>
+    </div>
+    <p class="section-note">Appuyer dessus pour appeler.</p>
+    <div class="restos-grid" id="restos-container"></div>
+  </section>
+
+  <div class="tremiere">
+    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
       <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
       <g fill="#C1587A">
         <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
@@ -403,7 +507,7 @@
   <!-- ================= ACTUS ================= -->
   <section id="actus">
     <div class="section-head">
-      <span class="section-num">04</span>
+      <span class="section-num">05</span>
       <h2 class="section-title">Les actus de l'île</h2>
     </div>
     <p class="section-note">Essai de récupération en direct depuis Ré à la Hune, avec un secours si le flux est indisponible.</p>
@@ -427,7 +531,7 @@
   <!-- ================= PHOTOS ================= -->
   <section id="photos">
     <div class="section-head">
-      <span class="section-num">05</span>
+      <span class="section-num">06</span>
       <h2 class="section-title">Quelques images de l'île</h2>
     </div>
     <p class="section-note">Photos libres de droits, Wikimedia Commons.</p>
@@ -606,6 +710,120 @@
     badge.className = 'martiniere-statut ' + (ouvert ? 'ouvert' : 'ferme');
   }
 
+  // ---------- RESTOS COUP DE COEUR ----------
+  // horaires : tableau de 7 jours (index = getDay(), 0=dimanche) de plages [debut,fin] en minutes
+  const RESTOS = [
+    {
+      nom: "La Cabane du Fier",
+      ville: "Le Martray",
+      tel: "+33546296484",
+      horaires: [
+        [[720,840],[1140,1290]], // dim
+        [], // lun fermé
+        [[720,840],[1140,1290]], // mar
+        [[540,1020],[1140,1290]], // mer
+        [[720,840],[1140,1290]], // jeu
+        [[720,840],[1140,1290]], // ven
+        [[720,840],[1140,1290]], // sam
+      ]
+    },
+    {
+      nom: "O'Canailles",
+      ville: "Le Bois-Plage-en-Ré",
+      tel: "+33546278502",
+      horaires: [
+        [[570,870],[1080,1320]], // dim
+        [[570,870],[1080,1320]], // lun
+        [[570,870]], // mar
+        [], // mer fermé
+        [[570,870],[1080,1320]], // jeu
+        [[570,870],[1080,1380]], // ven
+        [[570,870],[1080,1380]], // sam
+      ]
+    },
+    {
+      nom: "Le Balaou",
+      ville: "La Couarde-sur-Mer",
+      tel: "+33546298607",
+      horaires: [
+        [[720,825],[1140,1290]], // dim
+        [], // lun fermé
+        [[1140,1290]], // mar
+        [[720,810],[1140,1290]], // mer
+        [[720,810],[1140,1290]], // jeu
+        [[720,810],[1140,1290]], // ven
+        [[720,810],[1140,1290]], // sam
+      ]
+    },
+    {
+      nom: "Le Beach Bar",
+      ville: "Le Bois-Plage-en-Ré",
+      tel: "+33645862035",
+      horaires: [
+        [[660,1380]], // dim
+        [[660,1380]], // lun
+        [[660,1380]], // mar
+        [[660,1380]], // mer
+        [], // jeu fermé
+        [[660,1380]], // ven
+        [[660,1380]], // sam
+      ]
+    },
+    {
+      nom: "Le Nac - Ré",
+      ville: "Saint-Martin-de-Ré",
+      tel: "+33676718300",
+      horaires: [
+        [[600,1230]], // dim
+        [[600,1230]], // lun
+        [[600,1230]], // mar
+        [], // mer fermé
+        [[600,1230]], // jeu
+        [[600,1230]], // ven
+        [[600,1230]], // sam
+      ]
+    },
+    {
+      nom: "La Cible",
+      ville: "Saint-Martin-de-Ré",
+      tel: "+33546673882",
+      horaires: [
+        [[0,90],[540,1440]], // dim (9h-1h30 du matin)
+        [[0,90],[540,1440]], // lun
+        [[0,90],[540,1440]], // mar
+        [[0,90],[540,1440]], // mer
+        [[0,90],[540,1440]], // jeu
+        [[0,90],[540,1440]], // ven
+        [[0,90],[540,1440]], // sam
+      ]
+    },
+  ];
+
+  function estOuvert(horaires){
+    const maintenant = new Date();
+    const jour = maintenant.getDay();
+    const minutesNow = maintenant.getHours() * 60 + maintenant.getMinutes();
+    return horaires[jour].some(([debut, fin]) => minutesNow >= debut && minutesNow <= fin);
+  }
+
+  function afficherRestos(){
+    const el = document.getElementById('restos-container');
+    el.innerHTML = '';
+    RESTOS.forEach(resto => {
+      const ouvert = estOuvert(resto.horaires);
+      const balise = resto.tel ? 'a' : 'div';
+      const carte = document.createElement(balise);
+      carte.className = 'resto-carte' + (resto.tel ? '' : ' pas-de-tel');
+      if(resto.tel) carte.href = 'tel:' + resto.tel;
+      carte.innerHTML = `
+        <div class="resto-nom">${resto.nom}</div>
+        <div class="resto-ville">${resto.ville}</div>
+        <div class="resto-statut ${ouvert ? 'ouvert' : 'ferme'}">${ouvert ? 'Ouvert' : 'Fermé'}</div>
+      `;
+      el.appendChild(carte);
+    });
+  }
+
   // ---------- ACTUS (essai flux Ré à la Hune via proxy, sinon secours) ----------
   const ACTUS_SECOURS = [
     {titre:"L'île en surchauffe : alerte canicule, incendie et eau potable", url:"https://www.realahune.fr/lile-en-surchauffe/", date:"16/07/2026"},
@@ -651,6 +869,7 @@
   chargerMeteo();
   chargerMarees();
   afficherMartiniere();
+  afficherRestos();
   chargerActus();
 </script>
 
