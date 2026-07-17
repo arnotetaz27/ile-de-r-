@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Écho du Bois — Île de Ré</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blanc-chaux:#FBF9F3;
+    --vert-re:#5C6F4F;
+    --vert-re-dark:#3B4A32;
+    --rose-tremiere:#C1587A;
+    --bleu-marais:#33566A;
+    --sable:#E7DBBB;
+    --encre:#26302B;
+    --ombre: rgba(38,48,43,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--blanc-chaux);
+    color:var(--encre);
+    font-family:'Public Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 20px 60px;}
+
+  /* ---------- MASTHEAD ---------- */
+  header.masthead{
+    padding:36px 20px 22px;
+    text-align:center;
+    border-bottom:3px solid var(--vert-re);
+    background:
+      radial-gradient(ellipse at top, rgba(92,111,79,0.06), transparent 70%);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--bleu-marais);
+    margin-bottom:10px;
+  }
+  h1.titre{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(34px,8vw,52px);
+    line-height:1;
+    margin:0 0 8px;
+    color:var(--vert-re-dark);
+  }
+  .soustitre{
+    font-size:14px;
+    color:#5b6259;
+    max-width:420px;
+    margin:0 auto;
+  }
+  .date-du-jour{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    margin-top:14px;
+    color:var(--rose-tremiere);
+    text-transform:capitalize;
+  }
+
+  /* ---------- HOLLYHOCK DIVIDER ---------- */
+  .tremiere{
+    display:flex;
+    justify-content:center;
+    margin:34px 0 18px;
+    opacity:.9;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section{margin-top:6px;}
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .section-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--rose-tremiere);
+    border:1px solid var(--rose-tremiere);
+    border-radius:20px;
+    padding:2px 9px;
+  }
+  .section-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:24px;
+    color:var(--vert-re-dark);
+    margin:0;
+  }
+  .section-note{
+    font-size:12.5px;
+    color:#77806f;
+    margin:-8px 0 16px 0;
+  }
+
+  /* ---------- WEATHER ---------- */
+  .meteo-scroll{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding-bottom:6px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .jour-carte{
+    flex:0 0 auto;
+    width:96px;
+    background:#fff;
+    border:1px solid var(--sable);
+    border-radius:14px;
+    padding:14px 8px;
+    text-align:center;
+    box-shadow:0 2px 0 var(--ombre);
+  }
+  .jour-carte .jour-nom{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--bleu-marais);
+  }
+  .jour-carte .jour-date{font-size:10px;color:#8b9186;margin-bottom:6px;}
+  .jour-carte .icone{font-size:28px;margin:4px 0;}
+  .jour-carte .temps{font-size:13px;font-weight:600;}
+  .jour-carte .tmin{color:#8b9186;font-weight:400;}
+  .jour-carte .pluie{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--bleu-marais);
+    margin-top:6px;
+  }
+  .meteo-loading, .actus-loading{
+    font-size:13px;color:#8b9186;font-style:italic;
+  }
+
+  /* ---------- NEWS ---------- */
+  .actu-item{
+    padding:14px 0;
+    border-bottom:1px solid var(--sable);
+  }
+  .actu-item:first-child{padding-top:0;}
+  .actu-item a{
+    font-family:'Fraunces', serif;
+    font-size:17px;
+    font-weight:500;
+    color:var(--encre);
+    text-decoration:none;
+    line-height:1.3;
+  }
+  .actu-item a:hover{color:var(--rose-tremiere);}
+  .actu-source{
+    display:block;
+    margin-top:5px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--bleu-marais);
+  }
+  .actu-fallback-tag{
+    color:#a8874f;
+  }
+  .lien-source{
+    display:inline-block;
+    margin-top:16px;
+    font-size:13px;
+    color:var(--vert-re-dark);
+    border-bottom:1px solid var(--vert-re);
+    text-decoration:none;
+  }
+
+  /* ---------- PHOTOS ---------- */
+  .galerie{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    grid-auto-rows:130px;
+    gap:8px;
+  }
+  .galerie figure{
+    margin:0;
+    position:relative;
+    overflow:hidden;
+    border-radius:12px;
+    background:var(--sable);
+  }
+  .galerie figure:first-child{grid-row:span 2;}
+  .galerie img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    transition:transform .5s ease;
+  }
+  .galerie figure:hover img{transform:scale(1.06);}
+  .galerie figcaption{
+    position:absolute;left:0;right:0;bottom:0;
+    padding:8px 10px 6px;
+    font-size:11px;
+    color:#fff;
+    background:linear-gradient(to top, rgba(20,25,18,.75), transparent);
+  }
+
+  footer{
+    margin-top:40px;
+    text-align:center;
+    font-size:11.5px;
+    color:#9aa093;
+    font-family:'IBM Plex Mono', monospace;
+  }
+
+  @media (max-width:420px){
+    .galerie{grid-auto-rows:110px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="eyebrow">Édition personnelle · Île de Ré</div>
+  <h1 class="titre">L'Écho du Bois</h1>
+  <p class="soustitre">Météo du Bois-Plage-en-Ré, actus de l'île et quelques images pour le mal du pays.</p>
+  <div class="date-du-jour" id="date-du-jour"></div>
+</header>
+
+<div class="wrap">
+
+  <div class="tremiere">
+    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
+      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <g fill="#C1587A">
+        <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
+        <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
+        <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
+      </g>
+      <g fill="#3B4A32">
+        <circle cx="30" cy="19" r="1.6"/><circle cx="95" cy="15" r="1.8"/><circle cx="165" cy="10" r="1.6"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ================= METEO ================= -->
+  <section id="meteo">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Météo — Le Bois-Plage-en-Ré</h2>
+    </div>
+    <p class="section-note">Prévisions à 7 jours, données Open-Meteo, mises à jour à chaque ouverture.</p>
+    <div class="meteo-scroll" id="meteo-container">
+      <div class="meteo-loading">Récupération de la météo…</div>
+    </div>
+  </section>
+
+  <div class="tremiere">
+    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
+      <path d="M2 16 C 40 28, 80 8, 110 20 S 180 30, 218 12" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <g fill="#C1587A">
+        <circle cx="45" cy="22" r="3.6"/><circle cx="75" cy="12" r="4.4"/>
+        <circle cx="115" cy="19" r="3.4"/><circle cx="150" cy="26" r="4.2"/>
+        <circle cx="185" cy="16" r="3.6"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ================= ACTUS ================= -->
+  <section id="actus">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Les actus de l'île</h2>
+    </div>
+    <p class="section-note">Essai de récupération en direct depuis Ré à la Hune, avec un secours si le flux est indisponible.</p>
+    <div id="actus-container">
+      <div class="actus-loading">Recherche des derniers titres…</div>
+    </div>
+    <a class="lien-source" href="https://www.realahune.fr/" target="_blank" rel="noopener">Lire tout le journal sur realahune.fr →</a>
+  </section>
+
+  <div class="tremiere">
+    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
+      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <g fill="#C1587A">
+        <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
+        <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
+        <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ================= PHOTOS ================= -->
+  <section id="photos">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Quelques images de l'île</h2>
+    </div>
+    <p class="section-note">Photos libres de droits, Wikimedia Commons.</p>
+    <div class="galerie">
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Le%20Phare%20de%20la%20Baleine.jpg?width=500" alt="Phare des Baleines">
+        <figcaption>Phare des Baleines — Porjes, CC BY-SA</figcaption>
+      </figure>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Saint-Martin%20de%20Re%20-%20Phare.JPG?width=400" alt="Phare de Saint-Martin-de-Ré">
+        <figcaption>Saint-Martin-de-Ré — R. Jouan, CC BY</figcaption>
+      </figure>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Eglise%20Saint%20Martin%20(Ile%20de%20R%C3%A9).JPG?width=400" alt="Église Saint-Martin de Ré">
+        <figcaption>Église de Saint-Martin</figcaption>
+      </figure>
+      <figure>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ile%20de%20r%C3%A9.JPG?width=500" alt="Vagues île de Ré">
+        <figcaption>Vagues sur l'île — M. Griffon, CC BY</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <footer>
+    île de ré · fabriqué avec tendresse pour un amateur de l'île
+  </footer>
+</div>
+
+<script>
+  // ---------- DATE DU JOUR ----------
+  const jourFmt = new Intl.DateTimeFormat('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  document.getElementById('date-du-jour').textContent = jourFmt.format(new Date());
+
+  // ---------- METEO (Open-Meteo, Le Bois-Plage-en-Ré) ----------
+  const LAT = 46.1872, LON = -1.3919;
+
+  const WMO = {
+    0:['☀️','Ciel clair'],1:['🌤️','Peu nuageux'],2:['⛅','Partiellement nuageux'],3:['☁️','Couvert'],
+    45:['🌫️','Brouillard'],48:['🌫️','Brouillard givrant'],
+    51:['🌦️','Bruine légère'],53:['🌦️','Bruine'],55:['🌧️','Bruine forte'],
+    61:['🌧️','Pluie légère'],63:['🌧️','Pluie'],65:['🌧️','Pluie forte'],
+    71:['🌨️','Neige légère'],73:['🌨️','Neige'],75:['❄️','Neige forte'],
+    80:['🌦️','Averses'],81:['🌧️','Averses'],82:['⛈️','Fortes averses'],
+    95:['⛈️','Orage'],96:['⛈️','Orage / grêle'],99:['⛈️','Orage violent']
+  };
+
+  async function chargerMeteo(){
+    const el = document.getElementById('meteo-container');
+    try{
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&timezone=Europe%2FParis&forecast_days=7`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('reponse meteo invalide');
+      const data = await res.json();
+      const jours = data.daily.time;
+      el.innerHTML = '';
+      jours.forEach((iso, i) => {
+        const d = new Date(iso + 'T12:00:00');
+        const nom = new Intl.DateTimeFormat('fr-FR',{weekday:'short'}).format(d);
+        const jj = new Intl.DateTimeFormat('fr-FR',{day:'2-digit', month:'2-digit'}).format(d);
+        const code = data.daily.weathercode[i];
+        const [icone, label] = WMO[code] || ['🌡️','—'];
+        const tmax = Math.round(data.daily.temperature_2m_max[i]);
+        const tmin = Math.round(data.daily.temperature_2m_min[i]);
+        const pluie = data.daily.precipitation_probability_max[i];
+        const vent = Math.round(data.daily.windspeed_10m_max[i]);
+        const carte = document.createElement('div');
+        carte.className = 'jour-carte';
+        carte.title = label;
+        carte.innerHTML = `
+          <div class="jour-nom">${nom}</div>
+          <div class="jour-date">${jj}</div>
+          <div class="icone">${icone}</div>
+          <div class="temps">${tmax}° <span class="tmin">${tmin}°</span></div>
+          <div class="pluie">💧${pluie}% · ${vent}km/h</div>
+        `;
+        el.appendChild(carte);
+      });
+    }catch(e){
+      el.innerHTML = '<div class="meteo-loading">Météo indisponible pour le moment — réessaie dans un instant.</div>';
+    }
+  }
+
+  // ---------- ACTUS (essai flux Ré à la Hune via proxy, sinon secours) ----------
+  const ACTUS_SECOURS = [
+    {titre:"L'île en surchauffe : alerte canicule, incendie et eau potable", url:"https://www.realahune.fr/lile-en-surchauffe/", date:"16/07/2026"},
+    {titre:"Trente-trois tortues rendues à l'océan en bonne santé", url:"https://www.realahune.fr/trente-trois-tortues-rendues-a-locean-en-bonne-sante/", date:"juillet 2026"},
+    {titre:"Eau potable : la Charente-Maritime placée en « Alerte »", url:"https://www.realahune.fr/eau-potable-la-charente-maritime-en-alerte/", date:"11/07/2026"},
+    {titre:"La minorité municipale du Bois-Plage réagit", url:"https://www.realahune.fr/la-minorite-municipale-du-bois-plage-reagit/", date:"juillet 2026"},
+    {titre:"Un arrêté du maire de La Flotte interdit le camping en espaces naturels", url:"https://www.realahune.fr/un-arrete-du-maire-de-la-flotte-interdit-le-camping-en-espaces-naturels-agricoles-et-boises/", date:"13/07/2026"},
+    {titre:"Les ostréiculteurs vous font danser tout l'été !", url:"https://www.realahune.fr/les-ostreiculteurs-vous-font-danser-tout-lete/", date:"juillet 2026"},
+  ];
+
+  function afficherActus(liste, secours){
+    const el = document.getElementById('actus-container');
+    el.innerHTML = '';
+    liste.slice(0,8).forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'actu-item';
+      div.innerHTML = `
+        <a href="${item.url}" target="_blank" rel="noopener">${item.titre}</a>
+        <span class="actu-source">${secours ? '<span class="actu-fallback-tag">titre enregistré</span> · ' : 'Ré à la Hune · '}${item.date}</span>
+      `;
+      el.appendChild(div);
+    });
+  }
+
+  async function chargerActus(){
+    try{
+      const proxy = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://www.realahune.fr/feed/');
+      const res = await fetch(proxy);
+      if(!res.ok) throw new Error('flux indisponible');
+      const data = await res.json();
+      if(!data.items || !data.items.length) throw new Error('flux vide');
+      const liste = data.items.map(it => ({
+        titre: it.title,
+        url: it.link,
+        date: new Intl.DateTimeFormat('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(it.pubDate))
+      }));
+      afficherActus(liste, false);
+    }catch(e){
+      afficherActus(ACTUS_SECOURS, true);
+    }
+  }
+
+  chargerMeteo();
+  chargerActus();
+</script>
+
+</body>
+</html>
