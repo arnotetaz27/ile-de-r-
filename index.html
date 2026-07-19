@@ -342,11 +342,11 @@
   .actu-item:first-child{padding-top:0;}
   .actu-item a{
     font-family:'Fraunces', serif;
-    font-size:17px;
+    font-size:15px;
     font-weight:500;
     color:var(--encre);
     text-decoration:none;
-    line-height:1.3;
+    line-height:1.28;
   }
   .actu-item a:hover{color:var(--rose-tremiere);}
   .actu-source{
@@ -366,6 +366,49 @@
     color:var(--vert-re-dark);
     border-bottom:1px solid var(--vert-re);
     text-decoration:none;
+  }
+
+  /* ---------- ACTUS / EVENTS EN 2 COLONNES ---------- */
+  .actus-events-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  .sous-colonne-titre{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--bleu-marais);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  .event-item{
+    padding:11px 0;
+    border-bottom:1px solid var(--sable);
+  }
+  .event-item:first-child{padding-top:0;}
+  .event-titre{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:15px;
+    color:var(--encre);
+    line-height:1.28;
+  }
+  .event-date{
+    display:block;
+    margin-top:4px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--rose-tremiere);
+    font-weight:600;
+  }
+  .event-lieu{
+    font-size:10.5px;
+    color:#77806f;
+  }
+  @media (max-width:380px){
+    .actus-events-grid{grid-template-columns:1fr;gap:26px;}
   }
 
   /* ---------- PHOTOS ---------- */
@@ -559,11 +602,20 @@
     <div class="section-head">
       <h2 class="section-title">Les actus de l'île</h2>
     </div>
-    <p class="section-note">Essai de récupération en direct depuis Ré à la Hune, avec un secours si le flux est indisponible.</p>
-    <div id="actus-container">
-      <div class="actus-loading">Recherche des derniers titres…</div>
+    <div class="actus-events-grid">
+      <div class="colonne-actus">
+        <div class="sous-colonne-titre">Actus</div>
+        <div id="actus-container">
+          <div class="actus-loading">Recherche…</div>
+        </div>
+        <a class="lien-source" href="https://www.realahune.fr/" target="_blank" rel="noopener">realahune.fr →</a>
+      </div>
+      <div class="colonne-events">
+        <div class="sous-colonne-titre">Events</div>
+        <div id="events-container"></div>
+        <a class="lien-source" href="https://www.iledere.com/organiser-activites-et-loisirs/agenda-des-manifestations/agenda-des-evenements/" target="_blank" rel="noopener">Tout l'agenda →</a>
+      </div>
     </div>
-    <a class="lien-source" href="https://www.realahune.fr/" target="_blank" rel="noopener">Lire tout le journal sur realahune.fr →</a>
   </section>
 
   <div class="tremiere">
@@ -885,7 +937,7 @@
   function afficherActus(liste, secours){
     const el = document.getElementById('actus-container');
     el.innerHTML = '';
-    liste.slice(0,8).forEach(item => {
+    liste.slice(0,4).forEach(item => {
       const div = document.createElement('div');
       div.className = 'actu-item';
       div.innerHTML = `
