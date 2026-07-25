@@ -265,6 +265,33 @@
   .resto-statut.ouvert{background:#00E676;color:#0d2b12;}
   .resto-statut.ferme{background:var(--rose-tremiere);color:#fff;}
 
+  /* ---------- SERVICES (TAXI / VELO) ---------- */
+  .services-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .service-carte{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    background:#fff;
+    border:1px solid var(--sable);
+    border-radius:14px;
+    padding:20px 14px;
+    text-decoration:none;
+    color:inherit;
+    box-shadow:0 2px 0 var(--ombre);
+  }
+  .service-icone{font-size:32px;}
+  .service-nom{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:15px;
+    color:var(--vert-re-dark);
+  }
+
   /* ---------- WEBCAM ---------- */
   .webcam-carte{
     border:1px solid var(--sable);
@@ -560,6 +587,34 @@
         <div class="martiniere-horaire" id="martiniere-horaire">—</div>
       </div>
       <div class="martiniere-statut" id="martiniere-statut">…</div>
+    </div>
+  </section>
+
+  <div class="tremiere">
+    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
+      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <g fill="#C1587A">
+        <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
+        <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
+        <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
+      </g>
+      <g fill="#3B4A32">
+        <circle cx="30" cy="19" r="1.6"/><circle cx="95" cy="15" r="1.8"/><circle cx="165" cy="10" r="1.6"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ================= TAXI / VELO ================= -->
+  <section id="services">
+    <div class="services-grid">
+      <a class="service-carte" href="tel:+33671493098">
+        <div class="service-icone">🚕</div>
+        <div class="service-nom">Taxi</div>
+      </a>
+      <a class="service-carte" href="https://www.lesvelosdeliledere.com/#" target="_blank" rel="noopener">
+        <div class="service-icone">🚲</div>
+        <div class="service-nom">Vélo</div>
+      </a>
     </div>
   </section>
 
@@ -924,6 +979,29 @@
     });
   }
 
+  // ---------- EVENTS (source officielle iledere.com) ----------
+  const EVENTS = [
+    {titre:"Groupe Caprice — harpe & piano", date:"Dim. 19 juillet, 20h30 & 21h30", lieu:"Port de Saint-Martin-de-Ré"},
+    {titre:"Soirée années 80 — DJ set", date:"Mer. 22 juillet, 20h30–minuit", lieu:"Port de Saint-Martin-de-Ré"},
+    {titre:"Groupe Pop Fiction", date:"Dim. 26 juillet, 20h30", lieu:"Port de Saint-Martin-de-Ré"},
+    {titre:"Trio Karyan", date:"Mer. 29 juillet, 20h30", lieu:"Port de Saint-Martin-de-Ré"},
+  ];
+
+  function afficherEvents(){
+    const el = document.getElementById('events-container');
+    el.innerHTML = '';
+    EVENTS.forEach(ev => {
+      const div = document.createElement('div');
+      div.className = 'event-item';
+      div.innerHTML = `
+        <div class="event-titre">${ev.titre}</div>
+        <span class="event-date">${ev.date}</span>
+        <span class="event-lieu">${ev.lieu}</span>
+      `;
+      el.appendChild(div);
+    });
+  }
+
   // ---------- ACTUS (essai flux Ré à la Hune via proxy, sinon secours) ----------
   const ACTUS_SECOURS = [
     {titre:"L'île en surchauffe : alerte canicule, incendie et eau potable", url:"https://www.realahune.fr/lile-en-surchauffe/", date:"16/07/2026"},
@@ -970,6 +1048,7 @@
   chargerMarees();
   afficherMartiniere();
   afficherRestos();
+  afficherEvents();
   chargerActus();
 </script>
 
