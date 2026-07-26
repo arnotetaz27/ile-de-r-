@@ -113,6 +113,7 @@
     -webkit-overflow-scrolling:touch;
   }
   .jour-carte{
+    cursor:pointer;
     flex:0 0 auto;
     width:96px;
     background:#fff;
@@ -290,6 +291,71 @@
     font-weight:600;
     font-size:15px;
     color:var(--vert-re-dark);
+  }
+
+  /* ---------- MODAL DETAIL METEO ---------- */
+  .modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(18,32,26,0.55);
+    z-index:100;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  .modal-overlay.ouvert{display:flex;}
+  .modal-carte{
+    background:var(--blanc-chaux);
+    width:100%;
+    max-width:640px;
+    max-height:78vh;
+    overflow-y:auto;
+    border-radius:20px 20px 0 0;
+    padding:20px 20px 30px;
+  }
+  .modal-entete{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .modal-titre{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:20px;
+    color:var(--vert-re-dark);
+    text-transform:capitalize;
+  }
+  .modal-fermer{
+    background:var(--sable);
+    border:none;
+    border-radius:50%;
+    width:30px;height:30px;
+    font-size:16px;
+    color:var(--encre);
+    cursor:pointer;
+  }
+  .heure-ligne{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:9px 0;
+    border-bottom:1px solid var(--sable);
+    font-size:13.5px;
+  }
+  .heure-ligne .h{
+    font-family:'IBM Plex Mono', monospace;
+    width:42px;
+    color:var(--bleu-marais);
+    font-weight:600;
+  }
+  .heure-ligne .ic{font-size:18px;width:24px;}
+  .heure-ligne .t{font-weight:600;width:38px;}
+  .heure-ligne .pl{
+    margin-left:auto;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--rose-tremiere);
   }
 
   /* ---------- WEBCAM ---------- */
@@ -606,10 +672,13 @@
 
   <!-- ================= TAXI / VELO ================= -->
   <section id="services">
+    <div class="section-head">
+      <h2 class="section-title">Services</h2>
+    </div>
     <div class="services-grid">
       <a class="service-carte" href="tel:+33671493098">
         <div class="service-icone">🚕</div>
-        <div class="service-nom">Taxi</div>
+        <div class="service-nom">Taxi Anthony</div>
       </a>
       <a class="service-carte" href="https://www.lesvelosdeliledere.com/#" target="_blank" rel="noopener">
         <div class="service-icone">🚲</div>
@@ -715,6 +784,16 @@
   </footer>
 </div>
 
+<div class="modal-overlay" id="modal-meteo">
+  <div class="modal-carte">
+    <div class="modal-entete">
+      <div class="modal-titre" id="modal-titre">—</div>
+      <button class="modal-fermer" id="modal-fermer">✕</button>
+    </div>
+    <div id="modal-contenu"></div>
+  </div>
+</div>
+
 <script>
   // ---------- DATE DU JOUR ----------
   const jourFmt = new Intl.DateTimeFormat('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
@@ -736,10 +815,11 @@
   async function chargerMeteo(){
     const el = document.getElementById('meteo-container');
     try{
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&timezone=Europe%2FParis&forecast_days=7`;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&hourly=temperature_2m,weathercode,precipitation_probability&timezone=Europe%2FParis&forecast_days=7`;
       const res = await fetch(url);
       if(!res.ok) throw new Error('reponse meteo invalide');
       const data = await res.json();
+      donneesHoraires = data.hourly;
       const jours = data.daily.time;
       el.innerHTML = '';
       jours.forEach((iso, i) => {
@@ -762,12 +842,53 @@
           <div class="temps">${tmax}° <span class="tmin">${tmin}°</span></div>
           <div class="pluie">💧${pluie}% · ${vent}km/h</div>
         `;
+        carte.addEventListener('click', () => ouvrirDetailJour(iso));
         el.appendChild(carte);
       });
     }catch(e){
       el.innerHTML = '<div class="meteo-loading">Météo indisponible pour le moment — réessaie dans un instant.</div>';
     }
   }
+
+  // ---------- MODAL DETAIL HEURE PAR HEURE ----------
+  let donneesHoraires = null;
+
+  function ouvrirDetailJour(jourIso){
+    if(!donneesHoraires) return;
+    const d = new Date(jourIso + 'T12:00:00');
+    document.getElementById('modal-titre').textContent = new Intl.DateTimeFormat('fr-FR',{weekday:'long', day:'numeric', month:'long'}).format(d);
+
+    const contenu = document.getElementById('modal-contenu');
+    contenu.innerHTML = '';
+    donneesHoraires.time.forEach((t, i) => {
+      if(!t.startsWith(jourIso)) return;
+      const heure = t.slice(11,16);
+      const temp = Math.round(donneesHoraires.temperature_2m[i]);
+      const code = donneesHoraires.weathercode[i];
+      const [icone] = WMO[code] || ['🌡️'];
+      const pluie = donneesHoraires.precipitation_probability[i];
+      const ligne = document.createElement('div');
+      ligne.className = 'heure-ligne';
+      ligne.innerHTML = `
+        <span class="h">${heure}</span>
+        <span class="ic">${icone}</span>
+        <span class="t">${temp}°</span>
+        <span class="pl">💧${pluie}%</span>
+      `;
+      contenu.appendChild(ligne);
+    });
+
+    document.getElementById('modal-meteo').classList.add('ouvert');
+  }
+
+  document.getElementById('modal-fermer').addEventListener('click', () => {
+    document.getElementById('modal-meteo').classList.remove('ouvert');
+  });
+  document.getElementById('modal-meteo').addEventListener('click', (e) => {
+    if(e.target.id === 'modal-meteo') e.target.classList.remove('ouvert');
+  });
+
+
 
   // ---------- MAREES (Open-Meteo Marine, Le Bois-Plage-en-Ré) ----------
   async function chargerMarees(){
