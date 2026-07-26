@@ -812,10 +812,25 @@
     95:['⛈️','Orage'],96:['⛈️','Orage / grêle'],99:['⛈️','Orage violent']
   };
 
+  const WMO_NUIT = {
+    0:['🌙','Ciel clair'],1:['🌙','Peu nuageux'],2:['🌙','Partiellement nuageux'],3:['☁️','Couvert'],
+    45:['🌫️','Brouillard'],48:['🌫️','Brouillard givrant'],
+    51:['🌙🌧️','Bruine légère'],53:['🌙🌧️','Bruine'],55:['🌙🌧️','Bruine forte'],
+    61:['🌙🌧️','Pluie légère'],63:['🌙🌧️','Pluie'],65:['🌙🌧️','Pluie forte'],
+    71:['🌙❄️','Neige légère'],73:['🌙❄️','Neige'],75:['🌙❄️','Neige forte'],
+    80:['🌙🌧️','Averses'],81:['🌙🌧️','Averses'],82:['⛈️','Fortes averses'],
+    95:['⛈️','Orage'],96:['⛈️','Orage / grêle'],99:['⛈️','Orage violent']
+  };
+
+  function getIcone(code, estJour){
+    const table = estJour ? WMO : WMO_NUIT;
+    return table[code] || ['🌡️','—'];
+  }
+
   async function chargerMeteo(){
     const el = document.getElementById('meteo-container');
     try{
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&hourly=temperature_2m,weathercode,precipitation_probability&timezone=Europe%2FParis&forecast_days=7`;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&hourly=temperature_2m,weathercode,precipitation_probability,is_day&timezone=Europe%2FParis&forecast_days=7`;
       const res = await fetch(url);
       if(!res.ok) throw new Error('reponse meteo invalide');
       const data = await res.json();
@@ -858,14 +873,22 @@
     const d = new Date(jourIso + 'T12:00:00');
     document.getElementById('modal-titre').textContent = new Intl.DateTimeFormat('fr-FR',{weekday:'long', day:'numeric', month:'long'}).format(d);
 
+    const maintenant = new Date();
+    const jourIsoAujourdhui = maintenant.getFullYear() + '-' + String(maintenant.getMonth()+1).padStart(2,'0') + '-' + String(maintenant.getDate()).padStart(2,'0');
+    const estAujourdhui = jourIso === jourIsoAujourdhui;
+    const heureActuelle = maintenant.getHours();
+
     const contenu = document.getElementById('modal-contenu');
     contenu.innerHTML = '';
     donneesHoraires.time.forEach((t, i) => {
       if(!t.startsWith(jourIso)) return;
+      const heureNum = parseInt(t.slice(11,13), 10);
+      if(estAujourdhui && heureNum < heureActuelle) return;
       const heure = t.slice(11,16);
       const temp = Math.round(donneesHoraires.temperature_2m[i]);
       const code = donneesHoraires.weathercode[i];
-      const [icone] = WMO[code] || ['🌡️'];
+      const estJour = donneesHoraires.is_day[i] === 1;
+      const [icone] = getIcone(code, estJour);
       const pluie = donneesHoraires.precipitation_probability[i];
       const ligne = document.createElement('div');
       ligne.className = 'heure-ligne';
