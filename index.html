@@ -349,6 +349,12 @@
     color:var(--bleu-marais);
     font-weight:600;
   }
+  .heure-ligne .v{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--vert-re-dark);
+    width:52px;
+  }
   .heure-ligne .ic{font-size:18px;width:24px;}
   .heure-ligne .t{font-weight:600;width:38px;}
   .heure-ligne .pl{
@@ -742,43 +748,6 @@
     </div>
   </section>
 
-  <div class="tremiere">
-    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
-      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
-      <g fill="#C1587A">
-        <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
-        <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
-        <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
-      </g>
-    </svg>
-  </div>
-
-  <!-- ================= PHOTOS ================= -->
-  <section id="photos">
-    <div class="section-head">
-      <h2 class="section-title">Quelques images de l'île</h2>
-    </div>
-    <p class="section-note">Photos libres de droits, Wikimedia Commons.</p>
-    <div class="galerie">
-      <figure>
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Le%20Phare%20de%20la%20Baleine.jpg?width=500" alt="Phare des Baleines">
-        <figcaption>Phare des Baleines — Porjes, CC BY-SA</figcaption>
-      </figure>
-      <figure>
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Saint-Martin%20de%20Re%20-%20Phare.JPG?width=400" alt="Phare de Saint-Martin-de-Ré">
-        <figcaption>Saint-Martin-de-Ré — R. Jouan, CC BY</figcaption>
-      </figure>
-      <figure>
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Eglise%20Saint%20Martin%20(Ile%20de%20R%C3%A9).JPG?width=400" alt="Église Saint-Martin de Ré">
-        <figcaption>Église de Saint-Martin</figcaption>
-      </figure>
-      <figure>
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ile%20de%20r%C3%A9.JPG?width=500" alt="Vagues île de Ré">
-        <figcaption>Vagues sur l'île — M. Griffon, CC BY</figcaption>
-      </figure>
-    </div>
-  </section>
-
   <footer>
     île de ré · fabriqué avec tendresse pour un amateur de l'île
   </footer>
@@ -830,7 +799,7 @@
   async function chargerMeteo(){
     const el = document.getElementById('meteo-container');
     try{
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&hourly=temperature_2m,weathercode,precipitation_probability,is_day&timezone=Europe%2FParis&forecast_days=7`;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&hourly=temperature_2m,weathercode,precipitation_probability,is_day,windspeed_10m&timezone=Europe%2FParis&forecast_days=7`;
       const res = await fetch(url);
       if(!res.ok) throw new Error('reponse meteo invalide');
       const data = await res.json();
@@ -890,10 +859,12 @@
       const estJour = donneesHoraires.is_day[i] === 1;
       const [icone] = getIcone(code, estJour);
       const pluie = donneesHoraires.precipitation_probability[i];
+      const vent = Math.round(donneesHoraires.windspeed_10m[i]);
       const ligne = document.createElement('div');
       ligne.className = 'heure-ligne';
       ligne.innerHTML = `
         <span class="h">${heure}</span>
+        <span class="v">💨${vent}km/h</span>
         <span class="ic">${icone}</span>
         <span class="t">${temp}°</span>
         <span class="pl">💧${pluie}%</span>
