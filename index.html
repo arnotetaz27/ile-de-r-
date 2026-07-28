@@ -394,6 +394,19 @@
     text-align:right;
   }
 
+  .widget-carte{
+    border:1px solid var(--sable);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 2px 0 var(--ombre);
+    background:#fff;
+  }
+  .widget-carte iframe{
+    width:100%;
+    border:0;
+    display:block;
+  }
+
   /* ---------- RESTOS COUP DE COEUR ---------- */
   .restos-grid{
     display:grid;
@@ -633,9 +646,9 @@
     <div class="section-head">
       <h2 class="section-title">Marées</h2>
     </div>
-    <p class="section-note">Pleines et basses mers <strong>estimées</strong> sur 7 jours (Open-Meteo Marine, modèle ~8 km) — pratique pour un coup d'œil, mais approximatif. Pour l'heure exacte (SHOM), vérifie sur <a href="https://maree.info/126" target="_blank" rel="noopener" style="color:var(--vert-re-dark);">maree.info →</a></p>
-    <div class="meteo-scroll" id="marees-container">
-      <div class="maree-loading">Calcul des marées…</div>
+    <p class="section-note">Données officielles SHOM (via Marée-Live) — précises à la minute, pas d'estimation arrondie à l'heure.</p>
+    <div class="widget-carte">
+      <iframe src="https://maree-live.fr/widget-horloge.php?port=saint-martin_de_re&size=complet" style="height:470px;" loading="lazy" title="Marées Saint-Martin-de-Ré"></iframe>
     </div>
   </section>
 
@@ -887,71 +900,6 @@
 
 
 
-  // ---------- MAREES (Open-Meteo Marine, Le Bois-Plage-en-Ré) ----------
-  async function chargerMarees(){
-    const el = document.getElementById('marees-container');
-    try{
-      const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${LAT}&longitude=${LON}&hourly=sea_level_height_msl,sea_surface_temperature&timezone=Europe%2FParis&forecast_days=7`;
-      const res = await fetch(url);
-      if(!res.ok) throw new Error('reponse maree invalide');
-      const data = await res.json();
-      const temps = data.hourly.time;
-      const niveaux = data.hourly.sea_level_height_msl;
-      const eau = data.hourly.sea_surface_temperature;
-
-      // detection des extrema (pleine mer / basse mer) sur toute la serie horaire
-      const evenements = [];
-      for(let i = 1; i < niveaux.length - 1; i++){
-        const a = niveaux[i-1], b = niveaux[i], c = niveaux[i+1];
-        if(a === null || b === null || c === null) continue;
-        if(b > a && b > c) evenements.push({time: temps[i], niveau: b, type: 'pm'});
-        else if(b < a && b < c) evenements.push({time: temps[i], niveau: b, type: 'bm'});
-      }
-
-      // regroupement par jour (date ISO)
-      const jours = {};
-      evenements.forEach(ev => {
-        const jour = ev.time.slice(0,10);
-        if(!jours[jour]) jours[jour] = [];
-        jours[jour].push(ev);
-      });
-
-      // temperature moyenne de l'eau par jour (a partir des valeurs horaires disponibles)
-      const eauParJour = {};
-      temps.forEach((t, i) => {
-        const jour = t.slice(0,10);
-        if(eau[i] === null || eau[i] === undefined) return;
-        if(!eauParJour[jour]) eauParJour[jour] = [];
-        eauParJour[jour].push(eau[i]);
-      });
-
-      el.innerHTML = '';
-      Object.keys(jours).slice(0,7).forEach(jourIso => {
-        const d = new Date(jourIso + 'T12:00:00');
-        const nom = new Intl.DateTimeFormat('fr-FR',{weekday:'short'}).format(d);
-        const jj = new Intl.DateTimeFormat('fr-FR',{day:'2-digit', month:'2-digit'}).format(d);
-        const carte = document.createElement('div');
-        carte.className = 'maree-carte';
-        let html = `<div class="jour-nom">${nom}</div><div class="jour-date">${jj}</div>`;
-        jours[jourIso].slice(0,4).forEach(ev => {
-          const heure = ev.time.slice(11,16);
-          const label = ev.type === 'pm' ? 'PM' : 'BM';
-          html += `<div class="maree-event"><span class="type ${ev.type}">${label}</span><span class="heure">${heure}</span></div>`;
-        });
-        if(eauParJour[jourIso] && eauParJour[jourIso].length){
-          const moy = eauParJour[jourIso].reduce((a,b)=>a+b,0) / eauParJour[jourIso].length;
-          html += `<div class="maree-eau">🌊 ${moy.toFixed(1)}°C</div>`;
-        }
-        carte.innerHTML = html;
-        el.appendChild(carte);
-      });
-
-      if(!Object.keys(jours).length) throw new Error('aucun evenement de maree detecte');
-    }catch(e){
-      el.innerHTML = '<div class="maree-loading">Marées indisponibles pour le moment — réessaie dans un instant.</div>';
-    }
-  }
-
   // ---------- LA MARTINIERE (horaires) ----------
   const HORAIRES_MARTINIERE = {
     0: '10h30 – 22h30', // dimanche
@@ -1163,7 +1111,6 @@
   }
 
   chargerMeteo();
-  chargerMarees();
   afficherMartiniere();
   afficherRestos();
   afficherEvents();
