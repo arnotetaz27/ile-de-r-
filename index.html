@@ -646,9 +646,10 @@
     <div class="section-head">
       <h2 class="section-title">Marées</h2>
     </div>
-    <p class="section-note">Données officielles SHOM (via Marée-Live) — précises à la minute, pas d'estimation arrondie à l'heure.</p>
-    <iframe src="https://maree-live.fr/widget-horloge.php?port=saint-martin_de_re&size=complet" style="width:100%;height:470px;border:0;display:block;" loading="lazy" title="Marées Saint-Martin-de-Ré"></iframe>
-    <a class="lien-source" href="https://maree-live.fr/nouvelle-aquitaine/saint-martin_de_re" target="_blank" rel="noopener">Voir les 7 prochains jours →</a>
+    <p class="section-note">Estimation à la minute (interpolation sur le modèle Open-Meteo Marine) — swipe pour les 7 jours. Pas une donnée officielle SHOM ; pour l'heure certifiée, vérifie sur <a href="https://maree-live.fr/nouvelle-aquitaine/saint-martin_de_re" target="_blank" rel="noopener" style="color:var(--vert-re-dark);">maree-live.fr →</a></p>
+    <div class="meteo-scroll" id="marees-container">
+      <div class="maree-loading">Calcul des marées…</div>
+    </div>
   </section>
 
   <div class="tremiere">
@@ -899,6 +900,85 @@
 
 
 
+  // ---------- MAREES (Open-Meteo Marine + interpolation parabolique) ----------
+  // Les niveaux d'eau sont fournis heure par heure. Pour estimer l'heure de
+  // pleine/basse mer à la minute près (et pas juste "à l'heure ronde"), on
+  // ajuste une parabole sur les 3 points autour de chaque sommet détecté et
+  // on calcule l'offset exact du sommet de cette parabole.
+  async function chargerMarees(){
+    const el = document.getElementById('marees-container');
+    try{
+      const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${LAT}&longitude=${LON}&hourly=sea_level_height_msl,sea_surface_temperature&timezone=Europe%2FParis&forecast_days=7`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('reponse maree invalide');
+      const data = await res.json();
+      const temps = data.hourly.time;
+      const niveaux = data.hourly.sea_level_height_msl;
+      const eau = data.hourly.sea_surface_temperature;
+
+      const evenements = [];
+      for(let i = 1; i < niveaux.length - 1; i++){
+        const a = niveaux[i-1], b = niveaux[i], c = niveaux[i+1];
+        if(a === null || b === null || c === null) continue;
+        const estMax = b > a && b > c;
+        const estMin = b < a && b < c;
+        if(!estMax && !estMin) continue;
+
+        // interpolation parabolique : offset (en heures) du vrai sommet
+        // par rapport au point horaire central i
+        const denom = (a - 2*b + c);
+        let offsetH = 0;
+        if(denom !== 0){
+          offsetH = 0.5 * (a - c) / denom;
+          offsetH = Math.max(-0.5, Math.min(0.5, offsetH));
+        }
+        const heureExacte = new Date(temps[i] + ':00');
+        heureExacte.setMinutes(heureExacte.getMinutes() + Math.round(offsetH * 60));
+
+        evenements.push({time: heureExacte, jourIso: temps[i].slice(0,10), type: estMax ? 'pm' : 'bm'});
+      }
+
+      const jours = {};
+      evenements.forEach(ev => {
+        if(!jours[ev.jourIso]) jours[ev.jourIso] = [];
+        jours[ev.jourIso].push(ev);
+      });
+
+      const eauParJour = {};
+      temps.forEach((t, i) => {
+        const jour = t.slice(0,10);
+        if(eau[i] === null || eau[i] === undefined) return;
+        if(!eauParJour[jour]) eauParJour[jour] = [];
+        eauParJour[jour].push(eau[i]);
+      });
+
+      el.innerHTML = '';
+      Object.keys(jours).slice(0,7).forEach(jourIso => {
+        const d = new Date(jourIso + 'T12:00:00');
+        const nom = new Intl.DateTimeFormat('fr-FR',{weekday:'short'}).format(d);
+        const jj = new Intl.DateTimeFormat('fr-FR',{day:'2-digit', month:'2-digit'}).format(d);
+        const carte = document.createElement('div');
+        carte.className = 'maree-carte';
+        let html = `<div class="jour-nom">${nom}</div><div class="jour-date">${jj}</div>`;
+        jours[jourIso].slice(0,4).forEach(ev => {
+          const heure = ev.time.getHours().toString().padStart(2,'0') + ':' + ev.time.getMinutes().toString().padStart(2,'0');
+          const label = ev.type === 'pm' ? 'PM' : 'BM';
+          html += `<div class="maree-event"><span class="type ${ev.type}">${label}</span><span class="heure">${heure}</span></div>`;
+        });
+        if(eauParJour[jourIso] && eauParJour[jourIso].length){
+          const moy = eauParJour[jourIso].reduce((a,b)=>a+b,0) / eauParJour[jourIso].length;
+          html += `<div class="maree-eau">🌊 ${moy.toFixed(1)}°C</div>`;
+        }
+        carte.innerHTML = html;
+        el.appendChild(carte);
+      });
+
+      if(!Object.keys(jours).length) throw new Error('aucun evenement de maree detecte');
+    }catch(e){
+      el.innerHTML = '<div class="maree-loading">Marées indisponibles pour le moment — réessaie dans un instant.</div>';
+    }
+  }
+
   // ---------- LA MARTINIERE (horaires) ----------
   const HORAIRES_MARTINIERE = {
     0: '10h30 – 22h30', // dimanche
@@ -1110,6 +1190,7 @@
   }
 
   chargerMeteo();
+  chargerMarees();
   afficherMartiniere();
   afficherRestos();
   afficherEvents();
