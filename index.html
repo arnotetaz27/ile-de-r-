@@ -229,12 +229,30 @@
   }
 
   /* ---------- RESTOS COUP DE COEUR ---------- */
+  .section-head-avec-bouton{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+  }
+  .bouton-plus{
+    flex:0 0 auto;
+    width:30px;height:30px;
+    border-radius:50%;
+    border:none;
+    background:var(--vert-re-dark);
+    color:#fff;
+    font-size:18px;
+    line-height:1;
+    cursor:pointer;
+  }
   .restos-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:10px;
   }
   .resto-carte{
+    position:relative;
     display:block;
     background:#fff;
     border:1px solid var(--sable);
@@ -251,6 +269,7 @@
     font-size:15px;
     color:var(--vert-re-dark);
     line-height:1.25;
+    padding-right:16px;
   }
   .resto-ville{
     font-size:11.5px;
@@ -268,6 +287,80 @@
   }
   .resto-statut.ouvert{background:#00E676;color:#0d2b12;}
   .resto-statut.ferme{background:var(--rose-tremiere);color:#fff;}
+  .resto-carte.communaute .resto-ville{color:var(--rose-tremiere);font-weight:600;}
+  .resto-actions{
+    display:flex;
+    gap:6px;
+    margin-top:10px;
+    flex-wrap:wrap;
+  }
+  .resto-action-btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    font-weight:600;
+    padding:4px 9px;
+    border-radius:20px;
+    background:var(--sable);
+    color:var(--vert-re-dark);
+    text-decoration:none;
+  }
+  .resto-supprimer{
+    position:absolute;
+    top:8px;
+    right:8px;
+    width:20px;height:20px;
+    border-radius:50%;
+    border:none;
+    background:var(--sable);
+    color:var(--encre);
+    font-size:11px;
+    line-height:1;
+    cursor:pointer;
+  }
+
+  /* ---------- AJOUTER UN RESTAURANT (modal) ---------- */
+  .ajout-champ{
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+    font-family:'Public Sans', sans-serif;
+    font-size:14px;
+    padding:11px 13px;
+    margin-bottom:8px;
+    border:1px solid var(--sable);
+    border-radius:10px;
+    background:#fff;
+    color:var(--encre);
+  }
+  .ajout-champ:focus{outline:2px solid var(--vert-re);outline-offset:-1px;}
+  .ajout-note{
+    font-size:11.5px;
+    color:#77806f;
+    margin:-4px 0 10px;
+  }
+  .ajout-bouton{
+    display:block;
+    width:100%;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    padding:11px;
+    border:none;
+    border-radius:10px;
+    background:var(--vert-re-dark);
+    color:#fff;
+    cursor:pointer;
+  }
+  .ajout-bouton:disabled{opacity:.6;cursor:default;}
+  .ajout-message{
+    margin-top:9px;
+    font-size:12.5px;
+    min-height:16px;
+  }
+  .ajout-message.ok{color:var(--vert-re-dark);}
+  .ajout-message.erreur{color:var(--rose-tremiere);}
 
   /* ---------- SERVICES (TAXI / VELO) ---------- */
   .services-grid{
@@ -405,48 +498,6 @@
     width:100%;
     border:0;
     display:block;
-  }
-
-  /* ---------- RESTOS COUP DE COEUR ---------- */
-  .restos-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-  }
-  .resto-carte{
-    background:#fff;
-    border:1px solid var(--sable);
-    border-radius:14px;
-    padding:14px;
-    box-shadow:0 2px 0 var(--ombre);
-    text-decoration:none;
-    color:inherit;
-    display:block;
-    transition:transform .15s ease;
-  }
-  a.resto-carte:active{transform:scale(0.97);}
-  .resto-nom{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    font-size:15px;
-    color:var(--vert-re-dark);
-    line-height:1.25;
-  }
-  .resto-ville{
-    font-size:11.5px;
-    color:#77806f;
-    margin-top:2px;
-  }
-  .resto-bas{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-top:10px;
-  }
-  .resto-appel{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:10px;
-    color:#9aa093;
   }
 
   /* ---------- NEWS ---------- */
@@ -722,8 +773,9 @@
 
   <!-- ================= RESTOS COUP DE COEUR ================= -->
   <section id="restos">
-    <div class="section-head">
+    <div class="section-head-avec-bouton">
       <h2 class="section-title">Nos restos coup de cœur</h2>
+      <button type="button" class="bouton-plus" id="ouvrir-ajout-resto">+</button>
     </div>
     <p class="section-note">Appuyer dessus pour appeler.</p>
     <div class="restos-grid" id="restos-container"></div>
@@ -779,6 +831,23 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-ajout-resto">
+  <div class="modal-carte">
+    <div class="modal-entete">
+      <div class="modal-titre">Ajouter un restaurant</div>
+      <button class="modal-fermer" id="modal-ajout-fermer">✕</button>
+    </div>
+    <input type="text" id="ajout-nom" class="ajout-champ" placeholder="Nom du restaurant" maxlength="60">
+    <input type="tel" id="ajout-tel" class="ajout-champ" placeholder="Téléphone" maxlength="30">
+    <input type="url" id="ajout-site" class="ajout-champ" placeholder="Site internet" maxlength="120">
+    <p class="ajout-note">Renseigne au moins l'un des deux.</p>
+    <button type="button" id="ajout-bouton" class="ajout-bouton">Ajouter</button>
+    <div id="ajout-message" class="ajout-message"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
   // ---------- DATE DU JOUR ----------
   const jourFmt = new Intl.DateTimeFormat('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
@@ -1122,6 +1191,124 @@
       `;
       el.appendChild(carte);
     });
+    chargerRestosCommunaute();
+  }
+
+  // ---------- RESTOS AJOUTÉS PAR LA COMMUNAUTÉ (Firebase Firestore) ----------
+  const firebaseConfig = {
+    apiKey: "AIzaSyC6r-Jxic-sgIpx-VN5-5UAENQRRn-24Jk",
+    authDomain: "echo-du-bois.firebaseapp.com",
+    projectId: "echo-du-bois",
+    storageBucket: "echo-du-bois.firebasestorage.app",
+    messagingSenderId: "176113276078",
+    appId: "1:176113276078:web:628f4debc7e4f137fac93f"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  function creerCarteResto(id, nom, tel, site){
+    const carte = document.createElement('div');
+    carte.className = 'resto-carte communaute';
+
+    let actions = '';
+    if(tel) actions += `<a href="tel:${tel}" class="resto-action-btn">📞 Appeler</a>`;
+    if(site) actions += `<a href="${site}" target="_blank" rel="noopener" class="resto-action-btn">🌐 Site</a>`;
+
+    carte.innerHTML = `
+      <button class="resto-supprimer" title="Supprimer">✕</button>
+      <div class="resto-nom">${nom}</div>
+      <div class="resto-ville">Ajouté par vous 🌟</div>
+      <div class="resto-actions">${actions}</div>
+    `;
+
+    carte.querySelector('.resto-supprimer').addEventListener('click', async () => {
+      if(!confirm(`Supprimer "${nom}" ?`)) return;
+      try{
+        await db.collection('restos_communaute').doc(id).delete();
+        carte.remove();
+      }catch(e){
+        alert("La suppression a échoué, réessaie dans un instant.");
+      }
+    });
+
+    return carte;
+  }
+
+  async function chargerRestosCommunaute(){
+    const el = document.getElementById('restos-container');
+    try{
+      const snapshot = await db.collection('restos_communaute').orderBy('date','desc').get();
+      snapshot.forEach(doc => {
+        const r = doc.data();
+        el.appendChild(creerCarteResto(doc.id, r.nom, r.tel || null, r.site || null));
+      });
+    }catch(e){
+      // silencieux : les restos fixes restent affichés même si Firestore est indisponible
+    }
+  }
+
+  function normaliserTel(valeur){
+    return valeur.replace(/[^\d+]/g, '');
+  }
+  function normaliserSite(valeur){
+    let site = valeur.trim();
+    if(!/^https?:\/\//i.test(site)) site = 'https://' + site;
+    return site;
+  }
+
+  function initFormulaireAjoutResto(){
+    const boutonOuvrir = document.getElementById('ouvrir-ajout-resto');
+    const modal = document.getElementById('modal-ajout-resto');
+    const boutonFermer = document.getElementById('modal-ajout-fermer');
+    const bouton = document.getElementById('ajout-bouton');
+    const messageEl = document.getElementById('ajout-message');
+
+    boutonOuvrir.addEventListener('click', () => modal.classList.add('ouvert'));
+    boutonFermer.addEventListener('click', () => modal.classList.remove('ouvert'));
+    modal.addEventListener('click', (e) => {
+      if(e.target.id === 'modal-ajout-resto') modal.classList.remove('ouvert');
+    });
+
+    bouton.addEventListener('click', async () => {
+      const nomEl = document.getElementById('ajout-nom');
+      const telEl = document.getElementById('ajout-tel');
+      const siteEl = document.getElementById('ajout-site');
+      const nom = nomEl.value.trim();
+      const telBrut = telEl.value.trim();
+      const siteBrut = siteEl.value.trim();
+
+      messageEl.textContent = '';
+      messageEl.className = 'ajout-message';
+
+      if(!nom || (!telBrut && !siteBrut)){
+        messageEl.textContent = 'Merci de remplir le nom et au moins un numéro ou un site.';
+        messageEl.className = 'ajout-message erreur';
+        return;
+      }
+
+      const tel = telBrut ? normaliserTel(telBrut) : null;
+      const site = siteBrut ? normaliserSite(siteBrut) : null;
+
+      bouton.disabled = true;
+      bouton.textContent = 'Ajout en cours…';
+      try{
+        const ref = await db.collection('restos_communaute').add({
+          nom, tel, site,
+          date: new Date().toISOString()
+        });
+        document.getElementById('restos-container').appendChild(creerCarteResto(ref.id, nom, tel, site));
+        nomEl.value = '';
+        telEl.value = '';
+        siteEl.value = '';
+        messageEl.textContent = 'Ajouté ! Visible par tout le monde.';
+        messageEl.className = 'ajout-message ok';
+      }catch(e){
+        messageEl.textContent = "L'ajout a échoué, réessaie dans un instant.";
+        messageEl.className = 'ajout-message erreur';
+      }
+      bouton.disabled = false;
+      bouton.textContent = 'Ajouter';
+    });
   }
 
   // ---------- EVENTS (source officielle iledere.com) ----------
@@ -1193,6 +1380,7 @@
   chargerMarees();
   afficherMartiniere();
   afficherRestos();
+  initFormulaireAjoutResto();
   afficherEvents();
   chargerActus();
 </script>
