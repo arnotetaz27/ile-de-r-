@@ -317,6 +317,23 @@
     line-height:1;
     cursor:pointer;
   }
+  .carte-boutons{
+    position:absolute;
+    top:8px;
+    right:8px;
+    display:flex;
+    gap:6px;
+  }
+  .carte-boutons button{
+    width:20px;height:20px;
+    border-radius:50%;
+    border:none;
+    background:var(--sable);
+    color:var(--encre);
+    font-size:10.5px;
+    line-height:1;
+    cursor:pointer;
+  }
 
   /* ---------- AJOUTER UN RESTAURANT (modal) ---------- */
   .ajout-champ{
@@ -936,7 +953,7 @@
 <div class="modal-overlay" id="modal-ajout-reservation">
   <div class="modal-carte">
     <div class="modal-entete">
-      <div class="modal-titre">Ajouter une réservation</div>
+      <div class="modal-titre" id="modal-reservation-titre">Ajouter une réservation</div>
       <button class="modal-fermer" id="modal-reservation-fermer">✕</button>
     </div>
     <input type="text" id="resa-resto" class="ajout-champ" placeholder="Nom du restaurant" maxlength="60">
@@ -1426,7 +1443,10 @@
     if(ville) ligneDetail += `<span>📍 ${ville}</span>`;
 
     carte.innerHTML = `
-      <button class="resto-supprimer" title="Supprimer">✕</button>
+      <div class="carte-boutons">
+        <button class="btn-modifier" title="Modifier">✎</button>
+        <button class="btn-supprimer" title="Supprimer">✕</button>
+      </div>
       <div class="reservation-date-badge">
         <div class="rdb-jour">${jourAbrege}</div>
         <div class="rdb-num">${jourNum}</div>
@@ -1436,7 +1456,7 @@
         <div class="reservation-detail-row">${ligneDetail}</div>
       </div>
     `;
-    carte.querySelector('.resto-supprimer').addEventListener('click', async () => {
+    carte.querySelector('.btn-supprimer').addEventListener('click', async () => {
       if(!confirm(`Supprimer la réservation "${resto}" ?`)) return;
       try{
         await db.collection('reservations').doc(id).delete();
@@ -1444,6 +1464,9 @@
       }catch(e){
         alert("La suppression a échoué, réessaie dans un instant.");
       }
+    });
+    carte.querySelector('.btn-modifier').addEventListener('click', () => {
+      ouvrirModalReservation({ id, resto, date, heure, personnes, ville });
     });
     return carte;
   }
@@ -1469,6 +1492,38 @@
     }
   }
 
+  let resaEnEdition = null;
+
+  function ouvrirModalReservation(existant){
+    const modal = document.getElementById('modal-ajout-reservation');
+    const titreEl = document.getElementById('modal-reservation-titre');
+    const bouton = document.getElementById('resa-bouton');
+    const messageEl = document.getElementById('resa-message');
+    messageEl.textContent = '';
+    messageEl.className = 'ajout-message';
+
+    if(existant){
+      resaEnEdition = existant.id;
+      titreEl.textContent = 'Modifier la réservation';
+      bouton.textContent = 'Enregistrer';
+      document.getElementById('resa-resto').value = existant.resto;
+      document.getElementById('resa-date').value = existant.date;
+      document.getElementById('resa-heure').value = existant.heure;
+      document.getElementById('resa-personnes').value = existant.personnes;
+      document.getElementById('resa-ville').value = existant.ville || '';
+    }else{
+      resaEnEdition = null;
+      titreEl.textContent = 'Ajouter une réservation';
+      bouton.textContent = 'Ajouter';
+      document.getElementById('resa-resto').value = '';
+      document.getElementById('resa-date').value = '';
+      document.getElementById('resa-heure').value = '';
+      document.getElementById('resa-personnes').value = '';
+      document.getElementById('resa-ville').value = '';
+    }
+    modal.classList.add('ouvert');
+  }
+
   function initFormulaireAjoutReservation(){
     const boutonOuvrir = document.getElementById('ouvrir-ajout-reservation');
     const modal = document.getElementById('modal-ajout-reservation');
@@ -1476,7 +1531,7 @@
     const bouton = document.getElementById('resa-bouton');
     const messageEl = document.getElementById('resa-message');
 
-    boutonOuvrir.addEventListener('click', () => modal.classList.add('ouvert'));
+    boutonOuvrir.addEventListener('click', () => ouvrirModalReservation(null));
     boutonFermer.addEventListener('click', () => modal.classList.remove('ouvert'));
     modal.addEventListener('click', (e) => {
       if(e.target.id === 'modal-ajout-reservation') modal.classList.remove('ouvert');
@@ -1511,29 +1566,30 @@
         return;
       }
 
+      const donnees = {
+        resto, date, heure, personnes, ville: ville || null,
+        dateHeure: dateHeure.toISOString()
+      };
+
       bouton.disabled = true;
-      bouton.textContent = 'Ajout en cours…';
+      bouton.textContent = resaEnEdition ? 'Enregistrement…' : 'Ajout en cours…';
       try{
-        const ref = await db.collection('reservations').add({
-          resto, date, heure, personnes, ville: ville || null,
-          dateHeure: dateHeure.toISOString()
-        });
-        document.getElementById('reservations-container').appendChild(
-          creerCarteReservation(ref.id, resto, date, heure, personnes, ville || null)
-        );
-        restoEl.value = '';
-        dateEl.value = '';
-        heureEl.value = '';
-        personnesEl.value = '';
-        villeEl.value = '';
-        messageEl.textContent = 'Ajoutée ! Visible par tout le monde.';
+        if(resaEnEdition){
+          await db.collection('reservations').doc(resaEnEdition).update(donnees);
+          messageEl.textContent = 'Modifiée ! Visible par tout le monde.';
+        }else{
+          await db.collection('reservations').add(donnees);
+          messageEl.textContent = 'Ajoutée ! Visible par tout le monde.';
+        }
         messageEl.className = 'ajout-message ok';
+        await chargerReservations();
+        setTimeout(() => modal.classList.remove('ouvert'), 700);
       }catch(e){
-        messageEl.textContent = "L'ajout a échoué, réessaie dans un instant.";
+        messageEl.textContent = "L'opération a échoué, réessaie dans un instant.";
         messageEl.className = 'ajout-message erreur';
       }
       bouton.disabled = false;
-      bouton.textContent = 'Ajouter';
+      bouton.textContent = resaEnEdition ? 'Enregistrer' : 'Ajouter';
     });
   }
 
