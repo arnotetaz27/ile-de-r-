@@ -365,26 +365,63 @@
   /* ---------- PROCHAINES RESERVATIONS ---------- */
   .reservation-carte{
     position:relative;
+    display:flex;
+    align-items:center;
+    gap:14px;
     background:#fff;
     border:1px solid var(--sable);
-    border-radius:14px;
-    padding:14px;
+    border-radius:16px;
+    padding:14px 16px;
     box-shadow:0 2px 0 var(--ombre);
-    margin-bottom:8px;
+    margin-bottom:10px;
+  }
+  .reservation-date-badge{
+    flex:0 0 auto;
+    width:54px;
+    border:2px solid var(--vert-re-dark);
+    border-radius:13px;
+    overflow:hidden;
+    text-align:center;
+  }
+  .rdb-jour{
+    background:var(--vert-re-dark);
+    color:#fff;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    padding:3px 0;
+  }
+  .rdb-num{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:20px;
+    color:var(--vert-re-dark);
+    padding:5px 0;
+  }
+  .reservation-infos{
+    flex:1;
+    min-width:0;
+    padding-right:18px;
   }
   .reservation-resto{
     font-family:'Fraunces', serif;
-    font-weight:600;
-    font-size:15px;
-    color:var(--vert-re-dark);
-    padding-right:20px;
+    font-weight:700;
+    font-size:16px;
+    color:var(--encre);
+    line-height:1.2;
   }
-  .reservation-detail{
+  .reservation-detail-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:6px;
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
     color:var(--bleu-marais);
-    margin-top:4px;
   }
+  .reservation-detail-row span{white-space:nowrap;}
   .reservation-vide{
     font-size:13px;
     color:#8b9186;
@@ -906,6 +943,7 @@
     <input type="date" id="resa-date" class="ajout-champ">
     <input type="time" id="resa-heure" class="ajout-champ">
     <input type="number" id="resa-personnes" class="ajout-champ" placeholder="Nombre de personnes" min="1" max="50">
+    <input type="text" id="resa-ville" class="ajout-champ" placeholder="Ville (optionnel)" maxlength="40">
     <button type="button" id="resa-bouton" class="ajout-bouton">Ajouter</button>
     <div id="resa-message" class="ajout-message"></div>
   </div>
@@ -1377,15 +1415,26 @@
   }
 
   // ---------- PROCHAINES RESERVATIONS (Firebase Firestore) ----------
-  function creerCarteReservation(id, resto, date, heure, personnes){
+  function creerCarteReservation(id, resto, date, heure, personnes, ville){
     const carte = document.createElement('div');
     carte.className = 'reservation-carte';
     const d = new Date(date + 'T12:00:00');
-    const dateAffichee = new Intl.DateTimeFormat('fr-FR',{weekday:'short', day:'numeric', month:'long'}).format(d);
+    const jourAbrege = new Intl.DateTimeFormat('fr-FR',{weekday:'short'}).format(d).replace('.', '').toUpperCase();
+    const jourNum = d.getDate();
+
+    let ligneDetail = `<span>🕐 ${heure}</span><span>👤 ${personnes}</span>`;
+    if(ville) ligneDetail += `<span>📍 ${ville}</span>`;
+
     carte.innerHTML = `
       <button class="resto-supprimer" title="Supprimer">✕</button>
-      <div class="reservation-resto">${resto}</div>
-      <div class="reservation-detail">${dateAffichee} · ${heure} · ${personnes} pers.</div>
+      <div class="reservation-date-badge">
+        <div class="rdb-jour">${jourAbrege}</div>
+        <div class="rdb-num">${jourNum}</div>
+      </div>
+      <div class="reservation-infos">
+        <div class="reservation-resto">${resto}</div>
+        <div class="reservation-detail-row">${ligneDetail}</div>
+      </div>
     `;
     carte.querySelector('.resto-supprimer').addEventListener('click', async () => {
       if(!confirm(`Supprimer la réservation "${resto}" ?`)) return;
@@ -1413,7 +1462,7 @@
           db.collection('reservations').doc(doc.id).delete().catch(() => {});
           return;
         }
-        el.appendChild(creerCarteReservation(doc.id, r.resto, r.date, r.heure, r.personnes));
+        el.appendChild(creerCarteReservation(doc.id, r.resto, r.date, r.heure, r.personnes, r.ville));
       });
     }catch(e){
       // silencieux : section vide si Firestore est indisponible
@@ -1438,11 +1487,13 @@
       const dateEl = document.getElementById('resa-date');
       const heureEl = document.getElementById('resa-heure');
       const personnesEl = document.getElementById('resa-personnes');
+      const villeEl = document.getElementById('resa-ville');
 
       const resto = restoEl.value.trim();
       const date = dateEl.value;
       const heure = heureEl.value;
       const personnes = parseInt(personnesEl.value, 10);
+      const ville = villeEl.value.trim();
 
       messageEl.textContent = '';
       messageEl.className = 'ajout-message';
@@ -1464,16 +1515,17 @@
       bouton.textContent = 'Ajout en cours…';
       try{
         const ref = await db.collection('reservations').add({
-          resto, date, heure, personnes,
+          resto, date, heure, personnes, ville: ville || null,
           dateHeure: dateHeure.toISOString()
         });
         document.getElementById('reservations-container').appendChild(
-          creerCarteReservation(ref.id, resto, date, heure, personnes)
+          creerCarteReservation(ref.id, resto, date, heure, personnes, ville || null)
         );
         restoEl.value = '';
         dateEl.value = '';
         heureEl.value = '';
         personnesEl.value = '';
+        villeEl.value = '';
         messageEl.textContent = 'Ajoutée ! Visible par tout le monde.';
         messageEl.className = 'ajout-message ok';
       }catch(e){
