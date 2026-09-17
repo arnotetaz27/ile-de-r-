@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Écho du Bois — Île de Ré</title>
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="L'Écho du Bois">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blanc-chaux:#FBF9F3;
+    --vert-re:#5C6F4F;
+    --vert-re-dark:#3B4A32;
+    --rose-tremiere:#C1587A;
+    --bleu-marais:#33566A;
+    --sable:#E7DBBB;
+    --encre:#26302B;
+    --ombre: rgba(38,48,43,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--blanc-chaux);
+    color:var(--encre);
+    font-family:'Public Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 20px 60px;}
+
+  /* ---------- MASTHEAD ---------- */
+  header.masthead{
+    padding:36px 20px 22px;
+    text-align:center;
+    border-bottom:3px solid var(--vert-re);
+    background:
+      radial-gradient(ellipse at top, rgba(92,111,79,0.06), transparent 70%);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--bleu-marais);
+    margin-bottom:10px;
+  }
+  h1.titre{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(34px,8vw,52px);
+    line-height:1;
+    margin:0 0 8px;
+    color:var(--vert-re-dark);
+  }
+  .soustitre{
+    font-size:14px;
+    color:#5b6259;
+    max-width:420px;
+    margin:0 auto;
+  }
+  .date-du-jour{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    margin-top:14px;
+    color:var(--rose-tremiere);
+    text-transform:capitalize;
+  }
+
+  /* ---------- HOLLYHOCK DIVIDER ---------- */
+  .tremiere{
+    display:flex;
+    justify-content:center;
+    margin:34px 0 18px;
+    opacity:.9;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section{margin-top:6px;}
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .section-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--rose-tremiere);
+    border:1px solid var(--rose-tremiere);
+    border-radius:20px;
+    padding:2px 9px;
+  }
+  .section-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:24px;
+    color:var(--vert-re-dark);
+    margin:0;
+  }
+  .section-note{
+    font-size:12.5px;
+    color:#77806f;
+    margin:-8px 0 16px 0;
+  }
+
+  /* ---------- WEATHER ---------- */
+  .meteo-scroll{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding-bottom:6px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .jour-carte{
+    cursor:pointer;
+    flex:0 0 auto;
+    width:96px;
+    background:#fff;
+    border:1px solid var(--sable);
+    border-radius:14px;
+    padding:14px 8px;
+    text-align:center;
+    box-shadow:0 2px 0 var(--ombre);
+  }
+  .jour-carte .jour-nom{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--bleu-marais);
+  }
+  .jour-carte .jour-date{font-size:10px;color:#8b9186;margin-bottom:6px;}
+  .jour-carte .icone{font-size:28px;margin:4px 0;}
+  .jour-carte .temps{font-size:13px;font-weight:600;}
+  .jour-carte .tmin{color:#8b9186;font-weight:400;}
+  .jour-carte .pluie{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--bleu-marais);
+    margin-top:6px;
+  }
+  .meteo-loading, .actus-loading, .maree-loading{
+    font-size:13px;color:#8b9186;font-style:italic;
+  }
+
+  /* ---------- MAREES ---------- */
+  .maree-carte{
+    flex:0 0 auto;
+    width:118px;
+    background:#fff;
+    border:1px solid var(--sable);
+    border-radius:14px;
+    padding:14px 10px;
+    text-align:center;
+    box-shadow:0 2px 0 var(--ombre);
+  }
+  .maree-carte .jour-nom{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--bleu-marais);
+  }
+  .maree-carte .jour-date{font-size:10px;color:#8b9186;margin-bottom:8px;}
+  .maree-event{
+    display:flex;
+    justify-content:space-between;
+    gap:6px;
+    font-size:11.5px;
+    padding:3px 0;
+    border-top:1px dashed var(--sable);
+  }
+  .maree-event:first-of-type{border-top:none;}
+  .maree-event .type{font-weight:600;}
+  .maree-event .type.pm{color:var(--bleu-marais);}
+  .maree-event .type.bm{color:var(--rose-tremiere);}
+  .maree-event .heure{font-family:'IBM Plex Mono', monospace;color:var(--encre);}
+  .maree-eau{
+    margin-top:8px;
+    padding-top:6px;
+    border-top:1px solid var(--sable);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--vert-re-dark);
+  }
+
+  /* ---------- LA MARTINIERE ---------- */
+  .martiniere-carte{
+    background:#fff;
+    border:1px solid var(--sable);
+    border-radius:14px;
+    padding:18px 20px;
+    box-shadow:0 2px 0 var(--ombre);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+  }
+  .martiniere-nom{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:19px;
+    color:var(--vert-re-dark);
+  }
+  .martiniere-genre{
+    font-size:12px;
+    color:#77806f;
+    margin-top:2px;
+  }
+  .martiniere-statut{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .martiniere-statut.ouvert{background:#00E676;color:#0d2b12;}
+  .martiniere-statut.ferme{background:var(--rose-tremiere);color:#fff;}
+  .martiniere-horaire{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--encre);
+    margin-top:6px;
+  }
+
+  /* ---------- NEWS ---------- */
+  .actu-item{
+    padding:14px 0;
+    border-bottom:1px solid var(--sable);
+  }
+  .actu-item:first-child{padding-top:0;}
+  .actu-item a{
+    font-family:'Fraunces', serif;
+    font-size:15px;
+    font-weight:500;
+    color:var(--encre);
+    text-decoration:none;
+    line-height:1.28;
+  }
+  .actu-item a:hover{color:var(--rose-tremiere);}
+  .actu-source{
+    display:block;
+    margin-top:5px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--bleu-marais);
+  }
+  .actu-fallback-tag{
+    color:#a8874f;
+  }
+  .lien-source{
+    display:inline-block;
+    margin-top:16px;
+    font-size:13px;
+    color:var(--vert-re-dark);
+    border-bottom:1px solid var(--vert-re);
+    text-decoration:none;
+  }
+
+  /* ---------- ACTUS / EVENTS EN 2 COLONNES ---------- */
+  .actus-events-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  .sous-colonne-titre{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--bleu-marais);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  .event-item{
+    padding:11px 0;
+    border-bottom:1px solid var(--sable);
+  }
+  .event-item:first-child{padding-top:0;}
+  .event-titre{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:15px;
+    color:var(--encre);
+    line-height:1.28;
+  }
+  .event-date{
+    display:block;
+    margin-top:4px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--rose-tremiere);
+    font-weight:600;
+  }
+  .event-lieu{
+    font-size:10.5px;
+    color:#77806f;
+  }
+  @media (max-width:380px){
+    .actus-events-grid{grid-template-columns:1fr;gap:26px;}
+  }
+
+  /* ---------- PHOTOS ---------- */
+  .galerie{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    grid-auto-rows:130px;
+    gap:8px;
+  }
+  .galerie figure{
+    margin:0;
+    position:relative;
+    overflow:hidden;
+    border-radius:12px;
+    background:var(--sable);
+  }
+  .galerie figure:first-child{grid-row:span 2;}
+  .galerie img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    transition:transform .5s ease;
+  }
+  .galerie figure:hover img{transform:scale(1.06);}
+  .galerie figcaption{
+    position:absolute;left:0;right:0;bottom:0;
+    padding:8px 10px 6px;
+    font-size:11px;
+    color:#fff;
+    background:linear-gradient(to top, rgba(20,25,18,.75), transparent);
+  }
+
+  footer{
+    margin-top:40px;
+    text-align:center;
+    font-size:11.5px;
+    color:#9aa093;
+    font-family:'IBM Plex Mono', monospace;
+  }
+
+  @media (max-width:420px){
+    .galerie{grid-auto-rows:110px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="eyebrow">Édition personnelle · Île de Ré</div>
+  <h1 class="titre">L'Écho du Bois</h1>
+  <p class="soustitre">Météo du Bois-Plage-en-Ré, actus de l'île et quelques images pour le mal du pays.</p>
+  <div class="date-du-jour" id="date-du-jour"></div>
+</header>
+
+<div class="wrap">
+
+  <div class="tremiere">
+    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
+      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <g fill="#C1587A">
+        <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
+        <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
+        <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
+      </g>
+      <g fill="#3B4A32">
+        <circle cx="30" cy="19" r="1.6"/><circle cx="95" cy="15" r="1.8"/><circle cx="165" cy="10" r="1.6"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ================= WEBCAM ================= -->
+  <section id="webcam">
+    <div class="section-head">
+      <h2 class="section-title">Rivedoux — Plage Nord en direct</h2>
+    </div>
+    <div class="webcam-carte">
+      <div class="ratio">
+        <iframe src="https://www.skaping.com/rivedoux-plage-nord/video" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="webcam-credit">webcam Skaping</div>
+    </div>
+  </section>
+
+  <div class="tremiere">
+    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
+      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <g fill="#C1587A">
+        <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
+        <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
+        <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
+      </g>
+      <g fill="#3B4A32">
+        <circle cx="30" cy="19" r="1.6"/><circle cx="95" cy="15" r="1.8"/><circle cx="165" cy="10" r="1.6"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ================= METEO ================= -->
+  <section id="meteo">
+    <div class="section-head">
+      <h2 class="section-title">Météo</h2>
+    </div>
+    <p class="section-note">Prévisions à 7 jours, données Open-Meteo, mises à jour à chaque ouverture.</p>
+    <div class="meteo-scroll" id="meteo-container">
+      <div class="meteo-loading">Récupération de la météo…</div>
+    </div>
+  </section>
+
+  <div class="tremiere">
+    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
+      <path d="M2 16 C 40 28, 80 8, 110 20 S 180 30, 218 12" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <g fill="#C1587A">
+        <circle cx="45" cy="22" r="3.6"/><circle cx="75" cy="12" r="4.4"/>
+        <circle cx="115" cy="19" r="3.4"/><circle cx="150" cy="26" r="4.2"/>
+        <circle cx="185" cy="16" r="3.6"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ================= MAREES ================= -->
+  <section id="marees">
+    <div class="section-head">
+      <h2 class="section-title">Marées</h2>
+    </div>
+    <p class="section-note">Estimation à la minute (interpolation sur le modèle Open-Meteo Marine) — swipe pour les 7 jours. Pas une donnée officielle SHOM ; pour l'heure certifiée, vérifie sur <a href="https://maree-live.fr/nouvelle-aquitaine/saint-martin_de_re" target="_blank" rel="noopener" style="color:var(--vert-re-dark);">maree-live.fr →</a></p>
+    <div class="meteo-scroll" id="marees-container">
+      <div class="maree-loading">Calcul des marées…</div>
+    </div>
+  </section>
+
+  <div class="tremiere">
+    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
+      <path d="M2 16 C 40 28, 80 8, 110 20 S 180 30, 218 12" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <g fill="#C1587A">
+        <circle cx="45" cy="22" r="3.6"/><circle cx="75" cy="12" r="4.4"/>
+        <circle cx="115" cy="19" r="3.4"/><circle cx="150" cy="26" r="4.2"/>
+        <circle cx="185" cy="16" r="3.6"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ================= LA MARTINIERE ================= -->
+  <section id="martiniere">
+    <div class="section-head">
+      <h2 class="section-title">La Martinière aujourd'hui</h2>
+    </div>
+    <div class="martiniere-carte">
+      <div>
+        <div class="martiniere-nom">La Martinière</div>
+        <div class="martiniere-genre">Glacier — Le Bois-Plage-en-Ré</div>
+        <div class="martiniere-horaire" id="martiniere-horaire">—</div>
+      </div>
+      <div class="martiniere-statut" id="martiniere-statut">…</div>
+    </div>
+  </section>
+
+  <div class="tremiere">
+    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
+      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <g fill="#C1587A">
+        <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
+        <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
+        <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
+      </g>
+      <g fill="#3B4A32">
+        <circle cx="30" cy="19" r="1.6"/><circle cx="95" cy="15" r="1.8"/><circle cx="165" cy="10" r="1.6"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ================= TAXI / VELO ================= -->
+  <section id="services">
+    <div class="section-head">
+      <h2 class="section-title">Services</h2>
+    </div>
+    <div class="services-grid">
+      <a class="service-carte" href="tel:+33671493098">
+        <div class="service-icone">🚕</div>
+        <div class="service-nom">Taxi Anthony</div>
+      </a>
+      <a class="service-carte" href="https://www.lesvelosdeliledere.com/#" target="_blank" rel="noopener">
+        <div class="service-icone">🚲</div>
+        <div class="service-nom">Vélo</div>
+      </a>
+    </div>
+  </section>
+
+  <div class="tremiere">
+    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
+      <path d="M2 16 C 40 28, 80 8, 110 20 S 180 30, 218 12" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <g fill="#C1587A">
+        <circle cx="45" cy="22" r="3.6"/><circle cx="75" cy="12" r="4.4"/>
+        <circle cx="115" cy="19" r="3.4"/><circle cx="150" cy="26" r="4.2"/>
+        <circle cx="185" cy="16" r="3.6"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ================= ACTUS ================= -->
+  <section id="actus">
+    <div class="section-head">
+      <h2 class="section-title">Les actus de l'île</h2>
+    </div>
+    <div class="actus-events-grid">
+      <div class="colonne-actus">
+        <div class="sous-colonne-titre">Actus</div>
+        <div id="actus-container">
+          <div class="actus-loading">Recherche…</div>
+        </div>
+        <a class="lien-source" href="https://www.realahune.fr/" target="_blank" rel="noopener">realahune.fr →</a>
+      </div>
+      <div class="colonne-events">
+        <div class="sous-colonne-titre">Events</div>
+        <div id="events-container"></div>
+        <a class="lien-source" href="https://www.iledere.com/organiser-activites-et-loisirs/agenda-des-manifestations/agenda-des-evenements/" target="_blank" rel="noopener">Tout l'agenda →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    île de ré · fabriqué avec tendresse pour un amateur de l'île
+  </footer>
+</div>
+
+<div class="modal-overlay" id="modal-meteo">
+  <div class="modal-carte">
+    <div class="modal-entete">
+      <div class="modal-titre" id="modal-titre">—</div>
+      <button class="modal-fermer" id="modal-fermer">✕</button>
+    </div>
+    <div id="modal-contenu"></div>
+  </div>
+</div>
+
+<script>
+  // ---------- DATE DU JOUR ----------
+  const jourFmt = new Intl.DateTimeFormat('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  document.getElementById('date-du-jour').textContent = jourFmt.format(new Date());
+
+  // ---------- METEO (Open-Meteo, Le Bois-Plage-en-Ré) ----------
+  const LAT = 46.1872, LON = -1.3919;
+
+  const WMO = {
+    0:['☀️','Ciel clair'],1:['🌤️','Peu nuageux'],2:['⛅','Partiellement nuageux'],3:['☁️','Couvert'],
+    45:['🌫️','Brouillard'],48:['🌫️','Brouillard givrant'],
+    51:['🌦️','Bruine légère'],53:['🌦️','Bruine'],55:['🌧️','Bruine forte'],
+    61:['🌧️','Pluie légère'],63:['🌧️','Pluie'],65:['🌧️','Pluie forte'],
+    71:['🌨️','Neige légère'],73:['🌨️','Neige'],75:['❄️','Neige forte'],
+    80:['🌦️','Averses'],81:['🌧️','Averses'],82:['⛈️','Fortes averses'],
+    95:['⛈️','Orage'],96:['⛈️','Orage / grêle'],99:['⛈️','Orage violent']
+  };
+
+  const WMO_NUIT = {
+    0:['🌙','Ciel clair'],1:['🌙','Peu nuageux'],2:['🌙','Partiellement nuageux'],3:['☁️','Couvert'],
+    45:['🌫️','Brouillard'],48:['🌫️','Brouillard givrant'],
+    51:['🌙🌧️','Bruine légère'],53:['🌙🌧️','Bruine'],55:['🌙🌧️','Bruine forte'],
+    61:['🌙🌧️','Pluie légère'],63:['🌙🌧️','Pluie'],65:['🌙🌧️','Pluie forte'],
+    71:['🌙❄️','Neige légère'],73:['🌙❄️','Neige'],75:['🌙❄️','Neige forte'],
+    80:['🌙🌧️','Averses'],81:['🌙🌧️','Averses'],82:['⛈️','Fortes averses'],
+    95:['⛈️','Orage'],96:['⛈️','Orage / grêle'],99:['⛈️','Orage violent']
+  };
+
+  function getIcone(code, estJour){
+    const table = estJour ? WMO : WMO_NUIT;
+    return table[code] || ['🌡️','—'];
+  }
+
+  async function chargerMeteo(){
+    const el = document.getElementById('meteo-container');
+    try{
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&hourly=temperature_2m,weathercode,precipitation_probability,is_day,windspeed_10m&timezone=Europe%2FParis&forecast_days=7`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('reponse meteo invalide');
+      const data = await res.json();
+      donneesHoraires = data.hourly;
+      const jours = data.daily.time;
+      el.innerHTML = '';
+      jours.forEach((iso, i) => {
+        const d = new Date(iso + 'T12:00:00');
+        const nom = new Intl.DateTimeFormat('fr-FR',{weekday:'short'}).format(d);
+        const jj = new Intl.DateTimeFormat('fr-FR',{day:'2-digit', month:'2-digit'}).format(d);
+        const code = data.daily.weathercode[i];
+        const [icone, label] = WMO[code] || ['🌡️','—'];
+        const tmax = Math.round(data.daily.temperature_2m_max[i]);
+        const tmin = Math.round(data.daily.temperature_2m_min[i]);
+        const pluie = data.daily.precipitation_probability_max[i];
+        const vent = Math.round(data.daily.windspeed_10m_max[i]);
+        const carte = document.createElement('div');
+        carte.className = 'jour-carte';
+        carte.title = label;
+        carte.innerHTML = `
+          <div class="jour-nom">${nom}</div>
+          <div class="jour-date">${jj}</div>
+          <div class="icone">${icone}</div>
+          <div class="temps">${tmax}° <span class="tmin">${tmin}°</span></div>
+          <div class="pluie">💧${pluie}% · ${vent}km/h</div>
+        `;
+        carte.addEventListener('click', () => ouvrirDetailJour(iso));
+        el.appendChild(carte);
+      });
+    }catch(e){
+      el.innerHTML = '<div class="meteo-loading">Météo indisponible pour le moment — réessaie dans un instant.</div>';
+    }
+  }
+
+  // ---------- MODAL DETAIL HEURE PAR HEURE ----------
+  let donneesHoraires = null;
+
+  function ouvrirDetailJour(jourIso){
+    if(!donneesHoraires) return;
+    const d = new Date(jourIso + 'T12:00:00');
+    document.getElementById('modal-titre').textContent = new Intl.DateTimeFormat('fr-FR',{weekday:'long', day:'numeric', month:'long'}).format(d);
+
+    const maintenant = new Date();
+    const jourIsoAujourdhui = maintenant.getFullYear() + '-' + String(maintenant.getMonth()+1).padStart(2,'0') + '-' + String(maintenant.getDate()).padStart(2,'0');
+    const estAujourdhui = jourIso === jourIsoAujourdhui;
+    const heureActuelle = maintenant.getHours();
+
+    const contenu = document.getElementById('modal-contenu');
+    contenu.innerHTML = '';
+    donneesHoraires.time.forEach((t, i) => {
+      if(!t.startsWith(jourIso)) return;
+      const heureNum = parseInt(t.slice(11,13), 10);
+      if(estAujourdhui && heureNum < heureActuelle) return;
+      const heure = t.slice(11,16);
+      const temp = Math.round(donneesHoraires.temperature_2m[i]);
+      const code = donneesHoraires.weathercode[i];
+      const estJour = donneesHoraires.is_day[i] === 1;
+      const [icone] = getIcone(code, estJour);
+      const pluie = donneesHoraires.precipitation_probability[i];
+      const vent = Math.round(donneesHoraires.windspeed_10m[i]);
+      const ligne = document.createElement('div');
+      ligne.className = 'heure-ligne';
+      ligne.innerHTML = `
+        <span class="h">${heure}</span>
+        <span class="ic">${icone}</span>
+        <span class="t">${temp}°</span>
+        <span class="v">💨${vent}km/h</span>
+        <span class="pl">💧${pluie}%</span>
+      `;
+      contenu.appendChild(ligne);
+    });
+
+    document.getElementById('modal-meteo').classList.add('ouvert');
+  }
+
+  document.getElementById('modal-fermer').addEventListener('click', () => {
+    document.getElementById('modal-meteo').classList.remove('ouvert');
+  });
+  document.getElementById('modal-meteo').addEventListener('click', (e) => {
+    if(e.target.id === 'modal-meteo') e.target.classList.remove('ouvert');
+  });
+
+
+
+  // ---------- MAREES (Open-Meteo Marine + interpolation parabolique) ----------
+  // Les niveaux d'eau sont fournis heure par heure. Pour estimer l'heure de
+  // pleine/basse mer à la minute près (et pas juste "à l'heure ronde"), on
+  // ajuste une parabole sur les 3 points autour de chaque sommet détecté et
+  // on calcule l'offset exact du sommet de cette parabole.
+  async function chargerMarees(){
+    const el = document.getElementById('marees-container');
+    try{
+      const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${LAT}&longitude=${LON}&hourly=sea_level_height_msl,sea_surface_temperature&timezone=Europe%2FParis&forecast_days=7`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('reponse maree invalide');
+      const data = await res.json();
+      const temps = data.hourly.time;
+      const niveaux = data.hourly.sea_level_height_msl;
+      const eau = data.hourly.sea_surface_temperature;
+
+      const evenements = [];
+      for(let i = 1; i < niveaux.length - 1; i++){
+        const a = niveaux[i-1], b = niveaux[i], c = niveaux[i+1];
+        if(a === null || b === null || c === null) continue;
+        const estMax = b > a && b > c;
+        const estMin = b < a && b < c;
+        if(!estMax && !estMin) continue;
+
+        // interpolation parabolique : offset (en heures) du vrai sommet
+        // par rapport au point horaire central i
+        const denom = (a - 2*b + c);
+        let offsetH = 0;
+        if(denom !== 0){
+          offsetH = 0.5 * (a - c) / denom;
+          offsetH = Math.max(-0.5, Math.min(0.5, offsetH));
+        }
+        const heureExacte = new Date(temps[i] + ':00');
+        heureExacte.setMinutes(heureExacte.getMinutes() + Math.round(offsetH * 60));
+
+        evenements.push({time: heureExacte, jourIso: temps[i].slice(0,10), type: estMax ? 'pm' : 'bm'});
+      }
+
+      const jours = {};
+      evenements.forEach(ev => {
+        if(!jours[ev.jourIso]) jours[ev.jourIso] = [];
+        jours[ev.jourIso].push(ev);
+      });
+
+      const eauParJour = {};
+      temps.forEach((t, i) => {
+        const jour = t.slice(0,10);
+        if(eau[i] === null || eau[i] === undefined) return;
+        if(!eauParJour[jour]) eauParJour[jour] = [];
+        eauParJour[jour].push(eau[i]);
+      });
+
+      el.innerHTML = '';
+      Object.keys(jours).slice(0,7).forEach(jourIso => {
+        const d = new Date(jourIso + 'T12:00:00');
+        const nom = new Intl.DateTimeFormat('fr-FR',{weekday:'short'}).format(d);
+        const jj = new Intl.DateTimeFormat('fr-FR',{day:'2-digit', month:'2-digit'}).format(d);
+        const carte = document.createElement('div');
+        carte.className = 'maree-carte';
+        let html = `<div class="jour-nom">${nom}</div><div class="jour-date">${jj}</div>`;
+        jours[jourIso].slice(0,4).forEach(ev => {
+          const heure = ev.time.getHours().toString().padStart(2,'0') + ':' + ev.time.getMinutes().toString().padStart(2,'0');
+          const label = ev.type === 'pm' ? 'PM' : 'BM';
+          html += `<div class="maree-event"><span class="type ${ev.type}">${label}</span><span class="heure">${heure}</span></div>`;
+        });
+        if(eauParJour[jourIso] && eauParJour[jourIso].length){
+          const moy = eauParJour[jourIso].reduce((a,b)=>a+b,0) / eauParJour[jourIso].length;
+          html += `<div class="maree-eau">🌊 ${moy.toFixed(1)}°C</div>`;
+        }
+        carte.innerHTML = html;
+        el.appendChild(carte);
+      });
+
+      if(!Object.keys(jours).length) throw new Error('aucun evenement de maree detecte');
+    }catch(e){
+      el.innerHTML = '<div class="maree-loading">Marées indisponibles pour le moment — réessaie dans un instant.</div>';
+    }
+  }
+
+  // ---------- LA MARTINIERE (horaires) ----------
+  const HORAIRES_MARTINIERE = {
+    0: '10h30 – 22h30', // dimanche
+    1: '10h30 – 22h30', // lundi
+    2: '10h30 – 22h30',
+    3: '10h30 – 22h30',
+    4: '10h30 – 22h30',
+    5: '10h30 – 22h30',
+    6: '10h30 – 22h30', // samedi
+  };
+
+  function afficherMartiniere(){
+    const maintenant = new Date();
+    const jourSemaine = maintenant.getDay();
+    const horaireTexte = HORAIRES_MARTINIERE[jourSemaine];
+    document.getElementById('martiniere-horaire').textContent = "Aujourd'hui : " + horaireTexte;
+
+    // parse "10h30 – 22h30" pour determiner si ouvert maintenant
+    const [debutStr, finStr] = horaireTexte.split('–').map(s => s.trim());
+    const parseHeure = (s) => {
+      const [h, m] = s.replace('h', ':').split(':').map(Number);
+      return h * 60 + (m || 0);
+    };
+    const minutesMaintenant = maintenant.getHours() * 60 + maintenant.getMinutes();
+    const ouvert = minutesMaintenant >= parseHeure(debutStr) && minutesMaintenant <= parseHeure(finStr);
+
+    const badge = document.getElementById('martiniere-statut');
+    badge.textContent = ouvert ? 'Ouvert' : 'Fermé';
+    badge.className = 'martiniere-statut ' + (ouvert ? 'ouvert' : 'ferme');
+  }
+
+  // ---------- EVENTS (source officielle iledere.com) ----------
+  const EVENTS = [
+    {titre:"Groupe Caprice — harpe & piano", date:"Dim. 19 juillet, 20h30 & 21h30", lieu:"Port de Saint-Martin-de-Ré"},
+    {titre:"Soirée années 80 — DJ set", date:"Mer. 22 juillet, 20h30–minuit", lieu:"Port de Saint-Martin-de-Ré"},
+    {titre:"Groupe Pop Fiction", date:"Dim. 26 juillet, 20h30", lieu:"Port de Saint-Martin-de-Ré"},
+    {titre:"Trio Karyan", date:"Mer. 29 juillet, 20h30", lieu:"Port de Saint-Martin-de-Ré"},
+  ];
+
+  function afficherEvents(){
+    const el = document.getElementById('events-container');
+    el.innerHTML = '';
+    EVENTS.forEach(ev => {
+      const div = document.createElement('div');
+      div.className = 'event-item';
+      div.innerHTML = `
+        <div class="event-titre">${ev.titre}</div>
+        <span class="event-date">${ev.date}</span>
+        <span class="event-lieu">${ev.lieu}</span>
+      `;
+      el.appendChild(div);
+    });
+  }
+
+  // ---------- ACTUS (essai flux Ré à la Hune via proxy, sinon secours) ----------
+  const ACTUS_SECOURS = [
+    {titre:"L'île en surchauffe : alerte canicule, incendie et eau potable", url:"https://www.realahune.fr/lile-en-surchauffe/", date:"16/07/2026"},
+    {titre:"Trente-trois tortues rendues à l'océan en bonne santé", url:"https://www.realahune.fr/trente-trois-tortues-rendues-a-locean-en-bonne-sante/", date:"juillet 2026"},
+    {titre:"Eau potable : la Charente-Maritime placée en « Alerte »", url:"https://www.realahune.fr/eau-potable-la-charente-maritime-en-alerte/", date:"11/07/2026"},
+    {titre:"La minorité municipale du Bois-Plage réagit", url:"https://www.realahune.fr/la-minorite-municipale-du-bois-plage-reagit/", date:"juillet 2026"},
+    {titre:"Un arrêté du maire de La Flotte interdit le camping en espaces naturels", url:"https://www.realahune.fr/un-arrete-du-maire-de-la-flotte-interdit-le-camping-en-espaces-naturels-agricoles-et-boises/", date:"13/07/2026"},
+    {titre:"Les ostréiculteurs vous font danser tout l'été !", url:"https://www.realahune.fr/les-ostreiculteurs-vous-font-danser-tout-lete/", date:"juillet 2026"},
+  ];
+
+  function afficherActus(liste, secours){
+    const el = document.getElementById('actus-container');
+    el.innerHTML = '';
+    liste.slice(0,4).forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'actu-item';
+      div.innerHTML = `
+        <a href="${item.url}" target="_blank" rel="noopener">${item.titre}</a>
+        <span class="actu-source">${secours ? '<span class="actu-fallback-tag">titre enregistré</span> · ' : 'Ré à la Hune · '}${item.date}</span>
+      `;
+      el.appendChild(div);
+    });
+  }
+
+  async function chargerActus(){
+    try{
+      const proxy = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://www.realahune.fr/feed/');
+      const res = await fetch(proxy);
+      if(!res.ok) throw new Error('flux indisponible');
+      const data = await res.json();
+      if(!data.items || !data.items.length) throw new Error('flux vide');
+      const liste = data.items.map(it => ({
+        titre: it.title,
+        url: it.link,
+        date: new Intl.DateTimeFormat('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(it.pubDate))
+      }));
+      afficherActus(liste, false);
+    }catch(e){
+      afficherActus(ACTUS_SECOURS, true);
+    }
+  }
+
+  chargerMeteo();
+  chargerMarees();
+  afficherMartiniere();
+  afficherEvents();
+  chargerActus();
+</script>
+
+</body>
+</html>
