@@ -228,6 +228,187 @@
     margin-top:6px;
   }
 
+  /* ---------- SERVICES (TAXI / VELO) ---------- */
+  .services-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .service-carte{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    background:#fff;
+    border:1px solid var(--sable);
+    border-radius:14px;
+    padding:20px 14px;
+    text-decoration:none;
+    color:inherit;
+    box-shadow:0 2px 0 var(--ombre);
+  }
+  .service-icone{font-size:32px;}
+  .service-nom{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:15px;
+    color:var(--vert-re-dark);
+  }
+
+  /* ---------- RESTOS COUP DE COEUR ---------- */
+  .restos-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .resto-carte{
+    position:relative;
+    display:block;
+    background:#fff;
+    border:1px solid var(--sable);
+    border-radius:14px;
+    padding:14px;
+    text-decoration:none;
+    color:inherit;
+    box-shadow:0 2px 0 var(--ombre);
+  }
+  .resto-carte.pas-de-tel{cursor:default;}
+  .resto-nom{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:15px;
+    color:var(--vert-re-dark);
+    line-height:1.25;
+    padding-right:16px;
+  }
+  .resto-ville{
+    font-size:11.5px;
+    color:#77806f;
+    margin-top:3px;
+  }
+  .resto-statut{
+    display:inline-block;
+    margin-top:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    font-weight:700;
+    padding:3px 9px;
+    border-radius:20px;
+  }
+  .resto-statut.ouvert{background:#00E676;color:#0d2b12;}
+  .resto-statut.ferme{background:var(--rose-tremiere);color:#fff;}
+
+  /* ---------- MODAL DETAIL METEO ---------- */
+  .modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(18,32,26,0.55);
+    z-index:100;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  .modal-overlay.ouvert{display:flex;}
+  .modal-carte{
+    background:var(--blanc-chaux);
+    width:100%;
+    max-width:640px;
+    max-height:78vh;
+    overflow-y:auto;
+    border-radius:20px 20px 0 0;
+    padding:20px 20px 30px;
+  }
+  .modal-entete{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .modal-titre{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:20px;
+    color:var(--vert-re-dark);
+    text-transform:capitalize;
+  }
+  .modal-fermer{
+    background:var(--sable);
+    border:none;
+    border-radius:50%;
+    width:30px;height:30px;
+    font-size:16px;
+    color:var(--encre);
+    cursor:pointer;
+  }
+  .heure-ligne{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:9px 0;
+    border-bottom:1px solid var(--sable);
+    font-size:13.5px;
+  }
+  .heure-ligne .h{
+    font-family:'IBM Plex Mono', monospace;
+    width:42px;
+    color:var(--bleu-marais);
+    font-weight:600;
+  }
+  .heure-ligne .v{
+    margin-left:auto;
+    margin-right:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--vert-re-dark);
+  }
+  .heure-ligne .ic{font-size:18px;width:24px;}
+  .heure-ligne .t{font-weight:600;width:38px;}
+  .heure-ligne .pl{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--rose-tremiere);
+  }
+
+  /* ---------- WEBCAM ---------- */
+  .webcam-carte{
+    border:1px solid var(--sable);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 2px 0 var(--ombre);
+    background:#fff;
+  }
+  .webcam-carte .ratio{
+    position:relative;
+    width:100%;
+    padding-top:75%; /* 4:3 */
+  }
+  .webcam-carte iframe{
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    border:0;
+  }
+  .webcam-credit{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:#8b9186;
+    padding:8px 12px;
+    text-align:right;
+  }
+
+  .widget-carte{
+    border:1px solid var(--sable);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 2px 0 var(--ombre);
+    background:#fff;
+  }
+  .widget-carte iframe{
+    width:100%;
+    border:0;
+    display:block;
+  }
+
   /* ---------- NEWS ---------- */
   .actu-item{
     padding:14px 0;
@@ -499,6 +680,29 @@
     </svg>
   </div>
 
+  <!-- ================= RESTOS COUP DE COEUR ================= -->
+  <section id="restos">
+    <div class="section-head">
+      <h2 class="section-title">Nos restos coup de cœur</h2>
+    </div>
+    <p class="section-note">Appuyer dessus pour appeler.</p>
+    <div class="restos-grid" id="restos-container"></div>
+  </section>
+
+  <div class="tremiere">
+    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
+      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <g fill="#C1587A">
+        <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
+        <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
+        <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
+      </g>
+      <g fill="#3B4A32">
+        <circle cx="30" cy="19" r="1.6"/><circle cx="95" cy="15" r="1.8"/><circle cx="165" cy="10" r="1.6"/>
+      </g>
+    </svg>
+  </div>
+
   <!-- ================= ACTUS ================= -->
   <section id="actus">
     <div class="section-head">
@@ -766,6 +970,120 @@
     badge.className = 'martiniere-statut ' + (ouvert ? 'ouvert' : 'ferme');
   }
 
+  // ---------- RESTOS COUP DE COEUR ----------
+  // horaires : tableau de 7 jours (index = getDay(), 0=dimanche) de plages [debut,fin] en minutes
+  const RESTOS = [
+    {
+      nom: "La Cabane du Fier",
+      ville: "Le Martray",
+      tel: "+33546296484",
+      horaires: [
+        [[720,840],[1140,1290]], // dim
+        [], // lun fermé
+        [[720,840],[1140,1290]], // mar
+        [[540,1020],[1140,1290]], // mer
+        [[720,840],[1140,1290]], // jeu
+        [[720,840],[1140,1290]], // ven
+        [[720,840],[1140,1290]], // sam
+      ]
+    },
+    {
+      nom: "O'Canailles",
+      ville: "Le Bois-Plage-en-Ré",
+      tel: "+33546278502",
+      horaires: [
+        [[570,870],[1080,1320]], // dim
+        [[570,870],[1080,1320]], // lun
+        [[570,870]], // mar
+        [], // mer fermé
+        [[570,870],[1080,1320]], // jeu
+        [[570,870],[1080,1380]], // ven
+        [[570,870],[1080,1380]], // sam
+      ]
+    },
+    {
+      nom: "Le Balaou",
+      ville: "La Couarde-sur-Mer",
+      tel: "+33546298607",
+      horaires: [
+        [[720,825],[1140,1290]], // dim
+        [], // lun fermé
+        [[1140,1290]], // mar
+        [[720,810],[1140,1290]], // mer
+        [[720,810],[1140,1290]], // jeu
+        [[720,810],[1140,1290]], // ven
+        [[720,810],[1140,1290]], // sam
+      ]
+    },
+    {
+      nom: "Le Beach Bar",
+      ville: "Le Bois-Plage-en-Ré",
+      tel: "+33645862035",
+      horaires: [
+        [[660,1380]], // dim
+        [[660,1380]], // lun
+        [[660,1380]], // mar
+        [[660,1380]], // mer
+        [], // jeu fermé
+        [[660,1380]], // ven
+        [[660,1380]], // sam
+      ]
+    },
+    {
+      nom: "Le Nac - Ré",
+      ville: "Saint-Martin-de-Ré",
+      tel: "+33676718300",
+      horaires: [
+        [[600,1230]], // dim
+        [[600,1230]], // lun
+        [[600,1230]], // mar
+        [], // mer fermé
+        [[600,1230]], // jeu
+        [[600,1230]], // ven
+        [[600,1230]], // sam
+      ]
+    },
+    {
+      nom: "La Cible",
+      ville: "Saint-Martin-de-Ré",
+      tel: "+33546673882",
+      horaires: [
+        [[0,90],[540,1440]], // dim (9h-1h30 du matin)
+        [[0,90],[540,1440]], // lun
+        [[0,90],[540,1440]], // mar
+        [[0,90],[540,1440]], // mer
+        [[0,90],[540,1440]], // jeu
+        [[0,90],[540,1440]], // ven
+        [[0,90],[540,1440]], // sam
+      ]
+    },
+  ];
+
+  function estOuvert(horaires){
+    const maintenant = new Date();
+    const jour = maintenant.getDay();
+    const minutesNow = maintenant.getHours() * 60 + maintenant.getMinutes();
+    return horaires[jour].some(([debut, fin]) => minutesNow >= debut && minutesNow <= fin);
+  }
+
+  function afficherRestos(){
+    const el = document.getElementById('restos-container');
+    el.innerHTML = '';
+    RESTOS.forEach(resto => {
+      const ouvert = estOuvert(resto.horaires);
+      const balise = resto.tel ? 'a' : 'div';
+      const carte = document.createElement(balise);
+      carte.className = 'resto-carte' + (resto.tel ? '' : ' pas-de-tel');
+      if(resto.tel) carte.href = 'tel:' + resto.tel;
+      carte.innerHTML = `
+        <div class="resto-nom">${resto.nom}</div>
+        <div class="resto-ville">${resto.ville}</div>
+        <div class="resto-statut ${ouvert ? 'ouvert' : 'ferme'}">${ouvert ? 'Ouvert' : 'Fermé'}</div>
+      `;
+      el.appendChild(carte);
+    });
+  }
+
   // ---------- EVENTS (source officielle iledere.com) ----------
   const EVENTS = [
     {titre:"Groupe Caprice — harpe & piano", date:"Dim. 19 juillet, 20h30 & 21h30", lieu:"Port de Saint-Martin-de-Ré"},
@@ -834,6 +1152,7 @@
   chargerMeteo();
   chargerMarees();
   afficherMartiniere();
+  afficherRestos();
   afficherEvents();
   chargerActus();
 </script>
