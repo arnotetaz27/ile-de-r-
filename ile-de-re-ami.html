@@ -525,6 +525,67 @@
   @media (max-width:420px){
     .galerie{grid-auto-rows:110px;}
   }
+
+  /* ---------- MAINTENANT SUR L'ILE ---------- */
+  #maintenant{margin-top:0;}
+  .scene-carte{
+    position:relative;
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid var(--sable);
+    box-shadow:0 2px 0 var(--ombre);
+    background:#cfe5ee;
+    aspect-ratio:360/230;
+  }
+  .scene-carte svg{display:block;width:100%;height:100%;}
+  #rivage{transition:transform 1.4s ease;}
+  .houle{animation:houle 5s linear infinite;}
+  @keyframes houle{to{transform:translateX(-40px);}}
+  #pluie{animation:pluie .8s linear infinite;}
+  @keyframes pluie{to{transform:translate(-14px,60px);}}
+  .scene-live{
+    position:absolute;left:12px;top:12px;
+    display:flex;align-items:center;gap:6px;
+    font-family:'IBM Plex Mono', monospace;font-size:11px;
+    background:rgba(251,249,243,.9);color:var(--vert-re-dark);
+    padding:4px 10px 4px 9px;border-radius:20px;
+  }
+  .scene-live i{width:7px;height:7px;border-radius:50%;background:#00E676;animation:pouls 2s ease-in-out infinite;}
+  @keyframes pouls{50%{opacity:.3;}}
+  .maintenant-titre{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(26px,6.8vw,34px);
+    line-height:1.12;
+    color:var(--vert-re-dark);
+    margin:20px 0 8px;
+    text-wrap:balance;
+  }
+  .maintenant-texte{margin:0 0 16px;font-size:14.5px;line-height:1.5;color:#4b5650;}
+  .astres{
+    display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;
+    font-size:13px;line-height:1.35;color:#4b5650;
+    padding:12px 14px;margin-bottom:12px;
+    background:rgba(231,219,187,.38);border-radius:14px;
+  }
+  .astres b{font-weight:600;color:var(--vert-re-dark);}
+  .bons-plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .plan-carte{
+    background:#fff;border:1px solid var(--sable);border-radius:14px;
+    padding:13px 14px 12px;box-shadow:0 2px 0 var(--ombre);
+    display:flex;flex-direction:column;gap:5px;min-height:118px;
+  }
+  .plan-titre{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;color:var(--bleu-marais);}
+  .plan-pastille{width:9px;height:9px;border-radius:50%;flex:none;}
+  .plan-fleche{width:14px;height:14px;flex:none;transition:transform .8s ease;}
+  .plan-verdict{font-family:'Fraunces', serif;font-weight:600;font-size:19px;line-height:1.15;color:var(--vert-re-dark);}
+  .plan-detail{font-size:12px;line-height:1.4;color:#77806f;margin-top:auto;}
+  .plan-note{font-size:11.5px;color:#9aa093;margin:10px 2px 0;line-height:1.4;}
+  @media (prefers-reduced-motion:reduce){
+    .houle,#pluie,.scene-live i{animation:none;}
+    #rivage,.plan-fleche{transition:none;}
+  }
+  .event-vide{font-size:12.5px;color:#77806f;line-height:1.45;}
 </style>
 </head>
 <body>
@@ -532,11 +593,90 @@
 <header class="masthead">
   <div class="eyebrow">Édition personnelle · Île de Ré</div>
   <h1 class="titre">L'Écho du Bois</h1>
-  <p class="soustitre">Météo du Bois-Plage-en-Ré, actus de l'île et quelques images pour le mal du pays.</p>
+  <p class="soustitre">Le ciel, la mer et les nouvelles du Bois-Plage-en-Ré, en direct.</p>
   <div class="date-du-jour" id="date-du-jour"></div>
 </header>
 
 <div class="wrap">
+
+  <!-- ================= MAINTENANT SUR L'ILE ================= -->
+  <section id="maintenant">
+    <div class="scene-carte">
+      <svg id="scene" viewBox="0 0 360 230" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Le ciel, le soleil ou la lune et le niveau de la mer au Bois-Plage en ce moment">
+        <defs>
+          <linearGradient id="ciel-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop id="ciel-haut" offset="0" stop-color="#5b9ad0"/>
+            <stop id="ciel-bas" offset="1" stop-color="#cfe5ee"/>
+          </linearGradient>
+          <linearGradient id="mer-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop id="mer-haut" offset="0" stop-color="#6b93a6"/>
+            <stop id="mer-bas" offset="1" stop-color="#33566A"/>
+          </linearGradient>
+        </defs>
+        <rect width="360" height="230" fill="url(#ciel-grad)"/>
+        <g id="etoiles" fill="#fff" opacity="0">
+          <circle cx="22" cy="24" r="1"/><circle cx="58" cy="52" r="1.2"/><circle cx="96" cy="18" r="1"/>
+          <circle cx="132" cy="62" r=".9"/><circle cx="170" cy="30" r="1.3"/><circle cx="214" cy="14" r="1"/>
+          <circle cx="248" cy="56" r="1.1"/><circle cx="286" cy="26" r="1.2"/><circle cx="326" cy="48" r="1"/>
+          <circle cx="344" cy="12" r=".9"/><circle cx="196" cy="74" r=".8"/><circle cx="76" cy="84" r=".8"/>
+        </g>
+        <g id="soleil" opacity="0">
+          <circle id="soleil-halo" r="30" fill="#ffd9a0" opacity=".28"/>
+          <circle id="soleil-disque" r="15" fill="#fff1b8"/>
+        </g>
+        <g id="lune" opacity="0">
+          <circle r="13" fill="#2a3558" opacity=".85"/>
+          <path id="lune-forme" fill="#f4f1e4" d=""/>
+        </g>
+        <g id="nuages" opacity="0.2" fill="#fff">
+          <g><ellipse cx="82" cy="62" rx="30" ry="9"/><ellipse cx="100" cy="55" rx="20" ry="9"/><ellipse cx="66" cy="57" rx="16" ry="7"/></g>
+          <g><ellipse cx="226" cy="44" rx="34" ry="10"/><ellipse cx="248" cy="36" rx="20" ry="9"/><ellipse cx="206" cy="39" rx="16" ry="7"/></g>
+          <g><ellipse cx="300" cy="86" rx="26" ry="8"/><ellipse cx="316" cy="80" rx="16" ry="7"/></g>
+        </g>
+        <rect id="mer" x="0" y="128" width="360" height="110" fill="url(#mer-grad)"/>
+        <g id="phare" fill="#3B4A32" opacity=".82">
+          <polygon points="296,128 304,128 302.5,99 297.5,99"/>
+          <rect x="296.5" y="93" width="7" height="6"/>
+          <polygon points="296,93 300,86 304,93"/>
+          <rect x="294" y="127" width="12" height="2"/>
+        </g>
+        <circle id="phare-feu" cx="300" cy="96" r="2.4" fill="#ffe9a8" opacity="0"/>
+        <g id="rivage" style="transform:translateY(190px)">
+          <g class="houle">
+            <path id="sable" fill="#E7DBBB" d=""/>
+            <path id="sable-humide" fill="none" stroke="#cdbd92" stroke-width="9" opacity=".55" d="" transform="translate(0 7)"/>
+            <path id="ecume" fill="none" stroke="#fbf9f3" stroke-width="1.6" opacity=".85" d=""/>
+          </g>
+        </g>
+        <g id="pluie" stroke="#ffffff" stroke-width="1" stroke-linecap="round" opacity="0"></g>
+        <g id="tremieres">
+          <path d="M26 232 C 24 214, 28 196, 25 172" stroke="#5C6F4F" stroke-width="2" fill="none"/>
+          <path d="M46 232 C 48 218, 44 204, 47 184" stroke="#5C6F4F" stroke-width="2" fill="none"/>
+          <path d="M338 232 C 340 216, 336 200, 339 180" stroke="#5C6F4F" stroke-width="2" fill="none"/>
+          <path d="M26 224 q-9 -3 -12 -10 q9 0 12 10z M46 226 q9 -3 12 -10 q-9 0 -12 10z M338 226 q-9 -3 -12 -10 q9 0 12 10z" fill="#5C6F4F"/>
+          <g fill="#C1587A">
+            <circle cx="25" cy="176" r="3" /><circle cx="26" cy="186" r="5.2"/><circle cx="24" cy="198" r="5.6"/><circle cx="26" cy="210" r="5"/>
+            <circle cx="47" cy="188" r="3.4"/><circle cx="46" cy="199" r="5.4"/><circle cx="48" cy="211" r="5"/>
+            <circle cx="339" cy="184" r="3.2"/><circle cx="338" cy="195" r="5.4"/><circle cx="340" cy="207" r="5"/>
+          </g>
+          <g fill="#e2a0b6">
+            <circle cx="24" cy="185" r="2"/><circle cx="46" cy="198" r="2"/><circle cx="337" cy="194" r="2"/><circle cx="25" cy="197" r="2"/>
+          </g>
+          <g fill="#3B4A32">
+            <circle cx="26" cy="186" r="1.1"/><circle cx="24" cy="198" r="1.1"/><circle cx="26" cy="210" r="1.1"/>
+            <circle cx="46" cy="199" r="1.1"/><circle cx="48" cy="211" r="1.1"/><circle cx="338" cy="195" r="1.1"/><circle cx="340" cy="207" r="1.1"/>
+          </g>
+        </g>
+      </svg>
+      <div class="scene-live"><i></i><span id="scene-heure">en direct</span></div>
+    </div>
+    <h2 class="maintenant-titre" id="maintenant-titre">La mer, le ciel, un instant…</h2>
+    <p class="maintenant-texte" id="maintenant-texte"></p>
+    <div class="astres" id="astres"></div>
+    <div class="bons-plans" id="bons-plans"></div>
+    <p class="plan-note" id="plan-note"></p>
+  </section>
+
 
   <div class="tremiere">
     <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
@@ -775,11 +915,13 @@
   async function chargerMeteo(){
     const el = document.getElementById('meteo-container');
     try{
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&hourly=temperature_2m,weathercode,precipitation_probability,is_day,windspeed_10m&timezone=Europe%2FParis&forecast_days=7`;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max,sunrise,sunset,uv_index_max&hourly=temperature_2m,apparent_temperature,weathercode,precipitation_probability,is_day,windspeed_10m,windgusts_10m,winddirection_10m,cloud_cover&timezone=Europe%2FParis&forecast_days=7`;
       const res = await fetch(url);
       if(!res.ok) throw new Error('reponse meteo invalide');
       const data = await res.json();
       donneesHoraires = data.hourly;
+      ETAT.meteo = data;
+      setTimeout(majMaintenant, 0);
       const jours = data.daily.time;
       el.innerHTML = '';
       jours.forEach((iso, i) => {
@@ -895,9 +1037,12 @@
         const heureExacte = new Date(temps[i] + ':00');
         heureExacte.setMinutes(heureExacte.getMinutes() + Math.round(offsetH * 60));
 
-        evenements.push({time: heureExacte, jourIso: temps[i].slice(0,10), type: estMax ? 'pm' : 'bm'});
+        evenements.push({time: heureExacte, jourIso: temps[i].slice(0,10), type: estMax ? 'pm' : 'bm', niveau: b});
       }
 
+      const valides = niveaux.filter(v => v !== null && v !== undefined);
+      ETAT.marees = {temps, niveaux, eau, evenements, min: Math.min(...valides), max: Math.max(...valides)};
+      setTimeout(majMaintenant, 0);
       const jours = {};
       evenements.forEach(ev => {
         if(!jours[ev.jourIso]) jours[ev.jourIso] = [];
@@ -1084,18 +1229,21 @@
     });
   }
 
-  // ---------- EVENTS (source officielle iledere.com) ----------
-  const EVENTS = [
-    {titre:"Groupe Caprice — harpe & piano", date:"Dim. 19 juillet, 20h30 & 21h30", lieu:"Port de Saint-Martin-de-Ré"},
-    {titre:"Soirée années 80 — DJ set", date:"Mer. 22 juillet, 20h30–minuit", lieu:"Port de Saint-Martin-de-Ré"},
-    {titre:"Groupe Pop Fiction", date:"Dim. 26 juillet, 20h30", lieu:"Port de Saint-Martin-de-Ré"},
-    {titre:"Trio Karyan", date:"Mer. 29 juillet, 20h30", lieu:"Port de Saint-Martin-de-Ré"},
-  ];
+  // ---------- EVENTS ----------
+  // Ajoute un événement ici : {titre, date (texte affiché), iso (AAAA-MM-JJ), lieu}.
+  // Les événements passés disparaissent tout seuls.
+  const EVENTS = [];
 
   function afficherEvents(){
     const el = document.getElementById('events-container');
     el.innerHTML = '';
-    EVENTS.forEach(ev => {
+    const aujourdhui = isoLocal(new Date());
+    const avenir = EVENTS.filter(ev => ev.iso >= aujourdhui).sort((a,b) => a.iso.localeCompare(b.iso)).slice(0,4);
+    if(!avenir.length){
+      el.innerHTML = '<div class="event-vide">Rien d\'enregistré pour l\'instant. L\'agenda officiel est à jour juste en dessous.</div>';
+      return;
+    }
+    avenir.forEach(ev => {
       const div = document.createElement('div');
       div.className = 'event-item';
       div.innerHTML = `
@@ -1109,12 +1257,10 @@
 
   // ---------- ACTUS (essai flux Ré à la Hune via proxy, sinon secours) ----------
   const ACTUS_SECOURS = [
-    {titre:"L'île en surchauffe : alerte canicule, incendie et eau potable", url:"https://www.realahune.fr/lile-en-surchauffe/", date:"16/07/2026"},
-    {titre:"Trente-trois tortues rendues à l'océan en bonne santé", url:"https://www.realahune.fr/trente-trois-tortues-rendues-a-locean-en-bonne-sante/", date:"juillet 2026"},
-    {titre:"Eau potable : la Charente-Maritime placée en « Alerte »", url:"https://www.realahune.fr/eau-potable-la-charente-maritime-en-alerte/", date:"11/07/2026"},
-    {titre:"La minorité municipale du Bois-Plage réagit", url:"https://www.realahune.fr/la-minorite-municipale-du-bois-plage-reagit/", date:"juillet 2026"},
-    {titre:"Un arrêté du maire de La Flotte interdit le camping en espaces naturels", url:"https://www.realahune.fr/un-arrete-du-maire-de-la-flotte-interdit-le-camping-en-espaces-naturels-agricoles-et-boises/", date:"13/07/2026"},
-    {titre:"Les ostréiculteurs vous font danser tout l'été !", url:"https://www.realahune.fr/les-ostreiculteurs-vous-font-danser-tout-lete/", date:"juillet 2026"},
+    {titre:"Les élus du Bois-Plage dressent un bilan de saison", url:"https://www.realahune.fr/les-elus-du-bois-plage-dressent-un-bilan-de-saison/", date:"octobre 2026"},
+    {titre:"Champignons bio : deux Rétais créent La Souche", url:"https://www.realahune.fr/champignons-bio-deux-retais-creent-la-souche/", date:"octobre 2026"},
+    {titre:"Jean-Pierre Bonnet, de l'impertinence et du talent", url:"https://www.realahune.fr/jean-pierre-bonnet-de-limpertinence-et-du-talent/", date:"octobre 2026"},
+    {titre:"Regards d'extinction, une sublime sensibilité", url:"https://www.realahune.fr/regards-dextinction-une-sublime-sensibilite/", date:"octobre 2026"},
   ];
 
   function afficherActus(liste, secours){
@@ -1148,6 +1294,350 @@
       afficherActus(ACTUS_SECOURS, true);
     }
   }
+
+  // =====================================================================
+  // MAINTENANT SUR L'ILE : ciel, soleil, lune et niveau de mer en direct
+  // + verdicts du jour (vélo, pêche à pied, plage, vent)
+  // =====================================================================
+  const ETAT = {meteo:null, marees:null, derniereMaj:Date.now()};
+  const pad2 = n => String(n).padStart(2,'0');
+  const hhmm = d => pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  const hhmmMin = m => pad2(Math.floor(m/60)) + ':' + pad2(Math.round(m%60));
+  const isoLocal = d => d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate());
+  const minDuJour = d => d.getHours()*60 + d.getMinutes();
+  const minDepuisIso = s => parseInt(s.slice(11,13),10)*60 + parseInt(s.slice(14,16),10);
+  const bornes = (v,a,b) => Math.max(a, Math.min(b, v));
+  const rgb = h => [1,3,5].map(i => parseInt(h.slice(i,i+2),16));
+  const hex = a => '#' + a.map(v => pad2(Math.round(bornes(v,0,255)).toString(16))).join('');
+  const melange = (c1,c2,t) => { const a = rgb(c1), b = rgb(c2); return hex(a.map((v,i) => v + (b[i]-v)*t)); };
+  const delave = (c,t) => { const a = rgb(c); const g = 0.3*a[0] + 0.59*a[1] + 0.11*a[2]; return hex(a.map(v => v + (g-v)*t)); };
+
+  // Palette du ciel selon l'heure, calée sur le vrai lever / coucher du jour.
+  function paletteCiel(min, sr, ss){
+    const mid = (sr + ss) / 2;
+    const K = [
+      [0,'#0e1630','#1f2b52',1],
+      [sr-100,'#0e1630','#1f2b52',1],
+      [sr-45,'#34447a','#d98a6c',.6],
+      [sr+15,'#6f8fc0','#f3c28f',.1],
+      [sr+90,'#6fa6d6','#d9e8ea',0],
+      [mid,'#5b9ad0','#cfe5ee',0],
+      [ss-90,'#6aa3d2','#f1dfb6',0],
+      [ss-35,'#7a96c4','#f2b778',0],
+      [ss+5,'#5a5f9e','#e8805f',.15],
+      [ss+45,'#2b3466','#b6577a',.6],
+      [ss+100,'#0e1630','#1f2b52',1],
+      [1440,'#0e1630','#1f2b52',1]
+    ].sort((a,b) => a[0]-b[0]);
+    for(let i = 0; i < K.length-1; i++){
+      if(min <= K[i+1][0]){
+        const span = K[i+1][0] - K[i][0] || 1;
+        const t = bornes((min - K[i][0]) / span, 0, 1);
+        return {haut: melange(K[i][1],K[i+1][1],t), bas: melange(K[i][2],K[i+1][2],t), nuit: K[i][3] + (K[i+1][3]-K[i][3])*t};
+      }
+    }
+    return {haut:K[0][1], bas:K[0][2], nuit:1};
+  }
+
+  // Phase de la lune (formule astronomique simple, à quelques heures près).
+  function phaseLune(d){
+    const SYN = 29.530588853;
+    const ref = Date.UTC(2000,0,6,18,14);
+    let age = ((d.getTime() - ref) / 86400000) % SYN;
+    if(age < 0) age += SYN;
+    const p = age / SYN;
+    let nom;
+    if(p < .03 || p > .97) nom = 'nouvelle lune';
+    else if(p < .22) nom = 'premier croissant';
+    else if(p < .28) nom = 'premier quartier';
+    else if(p < .47) nom = 'lune gibbeuse croissante';
+    else if(p < .53) nom = 'pleine lune';
+    else if(p < .72) nom = 'lune gibbeuse décroissante';
+    else if(p < .78) nom = 'dernier quartier';
+    else nom = 'dernier croissant';
+    return {p, nom};
+  }
+
+  function formeLune(p, r){
+    const rx = Math.abs(Math.cos(2*Math.PI*p)) * r;
+    const croissante = p < .5;
+    const croissant = (p < .25 || p > .75);
+    const s1 = croissante ? 1 : 0;
+    const s2 = croissante ? (croissant ? 0 : 1) : (croissant ? 1 : 0);
+    return `M0 ${-r} A${r} ${r} 0 0 ${s1} 0 ${r} A${rx.toFixed(2)} ${r} 0 0 ${s2} 0 ${-r}Z`;
+  }
+
+  // Niveau de la mer à l'instant T, ramené entre 0 (plus basse de la semaine) et 1 (plus haute).
+  function niveauMaree(now){
+    const M = ETAT.marees;
+    if(!M) return null;
+    const t0 = new Date(M.temps[0] + ':00').getTime();
+    const x = (now.getTime() - t0) / 3600000;
+    const i = Math.floor(x);
+    if(i < 0 || i >= M.niveaux.length-1) return null;
+    const a = M.niveaux[i], b = M.niveaux[i+1];
+    if(a == null || b == null) return null;
+    const f = x - i;
+    const v = a + (b - a) * (1 - Math.cos(Math.PI*f)) / 2;
+    return {norm: bornes((v - M.min) / ((M.max - M.min) || 1), 0, 1), monte: b > a};
+  }
+
+  const CODES_PLUIE = [51,53,55,61,63,65,80,81,82,95,96,99];
+
+  // ---------- la scène ----------
+  let sceneInitialisee = false;
+  function initScene(){
+    const onde = 'M-40 0 q10 -4 20 0' + ' t20 0'.repeat(23);
+    document.getElementById('sable').setAttribute('d', onde + ' L440 300 L-40 300Z');
+    document.getElementById('sable-humide').setAttribute('d', onde);
+    document.getElementById('ecume').setAttribute('d', onde);
+    const pluie = document.getElementById('pluie');
+    let lignes = '';
+    for(let k = 0; k < 5; k++){
+      for(let j = 0; j < 9; j++){
+        const x0 = 20 + j*44 + (j%2)*14, y0 = (j*23) % 60;
+        const x = x0 - 14*k, y = y0 + 60*k - 60;
+        lignes += `<line x1="${x}" y1="${y}" x2="${(x-2.3).toFixed(1)}" y2="${y+10}"/>`;
+      }
+    }
+    pluie.innerHTML = lignes;
+    sceneInitialisee = true;
+  }
+
+  function dessinerScene(o){
+    if(!sceneInitialisee) initScene();
+    const $ = id => document.getElementById(id);
+    const pal = paletteCiel(o.min, o.sr, o.ss);
+    const nuages = bornes(o.nuages/100, 0, 1);
+    const haut = delave(pal.haut, nuages*0.75), bas = delave(pal.bas, nuages*0.75);
+    $('ciel-haut').setAttribute('stop-color', haut);
+    $('ciel-bas').setAttribute('stop-color', bas);
+    $('mer-haut').setAttribute('stop-color', melange(bas, '#3f6b80', .5));
+    $('mer-bas').setAttribute('stop-color', melange(haut, '#2f5568', .55));
+    $('etoiles').setAttribute('opacity', (pal.nuit * (1 - nuages*0.85)).toFixed(2));
+    $('nuages').setAttribute('opacity', (0.12 + 0.8*nuages).toFixed(2));
+    $('nuages').setAttribute('fill', melange('#ffffff', '#46507a', pal.nuit));
+
+    const jour = o.min >= o.sr - 15 && o.min <= o.ss + 15;
+    const arc = f => ({x: 40 + 280*f, y: 146 - 108*Math.sin(Math.PI*f)});
+    if(jour){
+      const f = bornes((o.min - o.sr) / ((o.ss - o.sr) || 1), 0, 1);
+      const p = arc(f);
+      $('soleil').setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`);
+      $('soleil').setAttribute('opacity', (1 - nuages*0.9).toFixed(2));
+      const haute = Math.sqrt(Math.sin(Math.PI*f));
+      $('soleil-disque').setAttribute('fill', melange('#ff9a55', '#fff1b8', haute));
+      $('soleil-halo').setAttribute('fill', melange('#ff8a4a', '#ffe3a8', haute));
+      $('lune').setAttribute('opacity', 0);
+    }else{
+      $('soleil').setAttribute('opacity', 0);
+      const longueurNuit = 1440 - (o.ss - o.sr);
+      const depuis = o.min > o.ss ? o.min - o.ss : o.min + 1440 - o.ss;
+      const f = bornes(depuis / (longueurNuit || 1), 0, 1);
+      const p = arc(f);
+      $('lune').setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`);
+      $('lune').setAttribute('opacity', (1 - nuages*0.7).toFixed(2));
+      $('lune-forme').setAttribute('d', formeLune(o.lune.p, 13));
+    }
+
+    $('phare-feu').setAttribute('opacity', pal.nuit > .5 ? 1 : 0);
+    $('pluie').setAttribute('opacity', o.pluie ? .55 : 0);
+    const y = 214 - 66 * (o.maree ? o.maree.norm : .5);
+    $('rivage').style.transform = `translateY(${y.toFixed(1)}px)`;
+  }
+
+  // ---------- outils texte ----------
+  const PREP_VENT = ['de nord','de nord-est',"d'est",'de sud-est','de sud',"de sud-ouest","d'ouest",'de nord-ouest'];
+  const prepVent = deg => PREP_VENT[Math.round(deg/45) % 8];
+  const maj1 = s => s.charAt(0).toUpperCase() + s.slice(1);
+  function etiquetteJour(d, now){
+    const a = isoLocal(d), b = isoLocal(now);
+    if(a === b) return "Aujourd'hui";
+    if(a === isoLocal(new Date(now.getTime() + 86400000))) return 'Demain';
+    return maj1(new Intl.DateTimeFormat('fr-FR',{weekday:'long'}).format(d));
+  }
+  const COULEURS_NIVEAU = {bon:'#1fbf6a', moyen:'#e0a030', mauvais:'#C1587A', neutre:'#9aa6ad'};
+
+  function fenetreMeteo(H, jourIso, h1, h2){
+    let n = 0, v = 0, r = 0, t = 0, g = 0;
+    H.time.forEach((s,i) => {
+      if(!s.startsWith(jourIso)) return;
+      const h = parseInt(s.slice(11,13),10);
+      if(h < h1 || h > h2) return;
+      n++; v += H.windspeed_10m[i] || 0; g = Math.max(g, H.windgusts_10m[i] || 0);
+      r = Math.max(r, H.precipitation_probability[i] || 0); t += H.temperature_2m[i];
+    });
+    return n ? {vent: Math.round(v/n), rafales: Math.round(g), pluie: Math.round(r), temp: Math.round(t/n)} : null;
+  }
+
+  // ---------- les quatre verdicts ----------
+  function planVelo(now, ss){
+    const H = ETAT.meteo.hourly;
+    let d = now, h1 = Math.max(now.getHours(), 8), h2 = Math.min(Math.floor(ss/60) - 1, 19);
+    if(h1 > h2){ d = new Date(now.getTime() + 86400000); h1 = 10; h2 = 17; }
+    const w = fenetreMeteo(H, isoLocal(d), h1, h2);
+    if(!w) return null;
+    let niveau = 'bon', verdict = 'Idéal pour pédaler';
+    if(w.pluie >= 60 || w.vent >= 35){ niveau = 'mauvais'; verdict = w.pluie >= 60 ? 'Plutôt pluvieux' : 'Vent de face costaud'; }
+    else if(w.pluie >= 30 || w.vent >= 22 || w.temp < 8){
+      niveau = 'moyen';
+      verdict = w.pluie >= 30 ? 'Prends un coupe-vent' : (w.vent >= 22 ? 'Ça souffle un peu' : 'Prévois une veste');
+    }
+    return {titre:'Vélo', niveau, verdict, detail: `${etiquetteJour(d, now)} · ${w.temp}° · vent ${w.vent} km/h · pluie ${w.pluie}%`};
+  }
+
+  function planPeche(now, sr, ss){
+    const M = ETAT.marees;
+    if(!M) return null;
+    const bms = M.evenements.filter(e => e.type === 'bm');
+    if(!bms.length) return null;
+    const bas = bms.map(e => e.niveau);
+    const mn = Math.min(...bas), mx = Math.max(...bas);
+    const limite = now.getTime() + 48*3600000;
+    const choix = bms.find(e => {
+      const t = e.time.getTime();
+      if(t < now.getTime() - 90*60000 || t > limite) return false;
+      const m = minDuJour(e.time);
+      return m >= sr - 20 && m <= ss + 20;
+    });
+    if(!choix) return {titre:'Pêche à pied', niveau:'neutre', verdict:'Basses mers de nuit', detail:'Pas de basse mer de jour dans les 2 prochains jours'};
+    const rang = bms.length >= 3 ? (choix.niveau - mn) / ((mx - mn) || 1) : .5;
+    let niveau, verdict;
+    if(rang < .34){ niveau = 'bon'; verdict = 'Belle marée basse'; }
+    else if(rang < .67){ niveau = 'moyen'; verdict = 'Marée moyenne'; }
+    else { niveau = 'mauvais'; verdict = 'Peu découvrante'; }
+    const avant = new Date(choix.time.getTime() - 90*60000), apres = new Date(choix.time.getTime() + 90*60000);
+    return {titre:'Pêche à pied', niveau, verdict, detail: `${etiquetteJour(choix.time, now)} · basse mer ${hhmm(choix.time)} · y aller de ${hhmm(avant)} à ${hhmm(apres)}`};
+  }
+
+  function planPlage(now, iJour, iHeure){
+    const M = ETAT.meteo, H = M.hourly;
+    let eau = null;
+    if(ETAT.marees){
+      const t = ETAT.marees.temps, e = ETAT.marees.eau;
+      const cle = isoLocal(now) + 'T' + pad2(now.getHours());
+      const i = t.findIndex(s => s.startsWith(cle));
+      if(i >= 0 && e[i] != null) eau = e[i];
+    }
+    const uv = M.daily.uv_index_max ? M.daily.uv_index_max[iJour] : null;
+    if(eau == null && uv == null) return null;
+    let niveau = 'neutre', verdict = 'Plage tranquille';
+    if(eau != null){
+      if(eau >= 20){ niveau = 'bon'; verdict = 'Baignade facile'; }
+      else if(eau >= 17){ niveau = 'bon'; verdict = 'Baignade rafraîchissante'; }
+      else if(eau >= 14){ niveau = 'moyen'; verdict = 'Pour les courageux'; }
+      else { niveau = 'mauvais'; verdict = 'Plutôt un bain de pieds'; }
+    }
+    const parts = [];
+    if(eau != null) parts.push(`eau ${eau.toFixed(0)}°`);
+    if(uv != null) parts.push(`UV ${Math.round(uv)}`);
+    if(iHeure >= 0) parts.push(`air ${Math.round(H.temperature_2m[iHeure])}°`);
+    return {titre:'Plage', niveau, verdict, detail: maj1(parts.join(' · '))};
+  }
+
+  function planVent(iHeure){
+    const H = ETAT.meteo.hourly;
+    if(iHeure < 0) return null;
+    const v = Math.round(H.windspeed_10m[iHeure]), g = Math.round(H.windgusts_10m[iHeure] || v), dir = H.winddirection_10m[iHeure];
+    let verdict;
+    if(v < 10) verdict = 'Presque calme';
+    else if(v < 20) verdict = 'Petite brise';
+    else if(v < 30) verdict = 'Bon vent';
+    else if(v < 45) verdict = 'Vent soutenu';
+    else verdict = 'Tempête : prudence';
+    return {titre:'Vent', fleche: dir, niveau:'neutre', verdict, detail: `Vent ${prepVent(dir)} · ${v} km/h · rafales ${g}`};
+  }
+
+  function dessinerPlans(plans){
+    const el = document.getElementById('bons-plans');
+    el.innerHTML = '';
+    plans.filter(Boolean).forEach(p => {
+      const c = document.createElement('div');
+      c.className = 'plan-carte';
+      const marque = p.fleche != null
+        ? `<svg class="plan-fleche" viewBox="0 0 14 14" style="transform:rotate(${(p.fleche + 180) % 360}deg)" aria-hidden="true"><path d="M7 1 L11 12 L7 9.6 L3 12 Z" fill="#33566A"/></svg>`
+        : `<span class="plan-pastille" style="background:${COULEURS_NIVEAU[p.niveau]}"></span>`;
+      c.innerHTML = `
+        <div class="plan-titre">${marque}${p.titre}</div>
+        <div class="plan-verdict">${p.verdict}</div>
+        <div class="plan-detail">${p.detail}</div>
+      `;
+      el.appendChild(c);
+    });
+  }
+
+  // ---------- assemblage ----------
+  function majMaintenant(){
+    const now = new Date();
+    const M = ETAT.meteo;
+    const mt = niveauMaree(now);
+    const lune = phaseLune(now);
+    let sr = 8*60, ss = 18*60, iJour = 0, iHeure = -1;
+    if(M){
+      const k = M.daily.time.indexOf(isoLocal(now));
+      iJour = k >= 0 ? k : 0;
+      sr = minDepuisIso(M.daily.sunrise[iJour]);
+      ss = minDepuisIso(M.daily.sunset[iJour]);
+      iHeure = M.hourly.time.findIndex(t => t.startsWith(isoLocal(now) + 'T' + pad2(now.getHours())));
+    }
+    const code = (M && iHeure >= 0) ? M.hourly.weathercode[iHeure] : 0;
+    const nuages = (M && iHeure >= 0 && M.hourly.cloud_cover) ? M.hourly.cloud_cover[iHeure] : 20;
+    const min = minDuJour(now);
+
+    dessinerScene({min, sr, ss, nuages, lune, maree: mt, pluie: CODES_PLUIE.includes(code)});
+    document.getElementById('scene-heure').textContent = 'en direct · ' + hhmm(now);
+
+    // titre
+    let titre = 'La mer, le ciel, un instant…';
+    const prochain = ETAT.marees ? ETAT.marees.evenements.find(e => e.time.getTime() > now.getTime()) : null;
+    if(mt && prochain){
+      const monte = prochain.type === 'pm';
+      const demain = isoLocal(prochain.time) !== isoLocal(now) ? 'demain ' : '';
+      titre = `La mer ${monte ? 'monte' : 'descend'}, ${monte ? 'pleine' : 'basse'} mer ${demain}à ${hhmm(prochain.time)}.`;
+    }else if(M && iHeure >= 0){
+      titre = `Il fait ${Math.round(M.hourly.temperature_2m[iHeure])}° au Bois-Plage.`;
+    }
+    document.getElementById('maintenant-titre').textContent = titre;
+
+    if(!M) return;
+    const estJour = min >= sr && min <= ss;
+    const [icone, label] = getIcone(code, estJour);
+    const temp = Math.round(M.hourly.temperature_2m[iHeure]);
+    const ress = M.hourly.apparent_temperature ? Math.round(M.hourly.apparent_temperature[iHeure]) : null;
+    let soleil;
+    if(min < sr) soleil = `Le soleil se lève à ${hhmmMin(sr)}.`;
+    else if(min <= ss) soleil = `Le soleil se couche à ${hhmmMin(ss)}.`;
+    else soleil = `Le soleil s'est couché à ${hhmmMin(ss)}.`;
+    document.getElementById('maintenant-texte').textContent =
+      `${icone} ${label}, ${temp}°${ress != null && Math.abs(ress - temp) >= 2 ? ` (ressenti ${ress}°)` : ''}. ${soleil}`;
+
+    const jourLong = ss - sr;
+    document.getElementById('astres').innerHTML = `
+      <div>🌅 <b>${hhmmMin(sr)}</b> lever</div>
+      <div>🌇 <b>${hhmmMin(ss)}</b> coucher</div>
+      <div>✨ Heure dorée dès <b>${hhmmMin(ss - 60)}</b></div>
+      <div>${['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'][Math.round(lune.p*8) % 8]} ${maj1(lune.nom)}</div>
+      <div style="grid-column:1 / -1">☀️ ${Math.floor(jourLong/60)} h ${pad2(Math.round(jourLong%60))} de jour aujourd'hui</div>
+    `;
+
+    dessinerPlans([planVelo(now, ss), planPeche(now, sr, ss), planPlage(now, iJour, iHeure), planVent(iHeure)]);
+    document.getElementById('plan-note').textContent = 'Verdicts calculés à partir des prévisions Open-Meteo. Marées et pêche à pied : estimations, pas des données officielles.';
+  }
+
+  function toutRafraichir(){
+    ETAT.derniereMaj = Date.now();
+    chargerMeteo();
+    chargerMarees();
+    afficherMartiniere();
+    if(typeof chargerReservations === 'function') chargerReservations();
+    chargerActus();
+  }
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden) return;
+    if(Date.now() - ETAT.derniereMaj > 20*60000) toutRafraichir();
+    else majMaintenant();
+  });
+  setInterval(() => { if(!document.hidden) majMaintenant(); }, 60000);
 
   chargerMeteo();
   chargerMarees();
