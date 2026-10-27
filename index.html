@@ -775,74 +775,11 @@
 
   <!-- ================= MAINTENANT SUR L'ILE ================= -->
   <section id="maintenant">
-    <div class="scene-carte">
-      <svg id="scene" viewBox="0 0 360 230" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Le ciel, le soleil ou la lune et le niveau de la mer au Bois-Plage en ce moment">
-        <defs>
-          <linearGradient id="ciel-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop id="ciel-haut" offset="0" stop-color="#5b9ad0"/>
-            <stop id="ciel-bas" offset="1" stop-color="#cfe5ee"/>
-          </linearGradient>
-          <linearGradient id="mer-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop id="mer-haut" offset="0" stop-color="#6b93a6"/>
-            <stop id="mer-bas" offset="1" stop-color="#33566A"/>
-          </linearGradient>
-        </defs>
-        <rect width="360" height="230" fill="url(#ciel-grad)"/>
-        <g id="etoiles" fill="#fff" opacity="0">
-          <circle cx="22" cy="24" r="1"/><circle cx="58" cy="52" r="1.2"/><circle cx="96" cy="18" r="1"/>
-          <circle cx="132" cy="62" r=".9"/><circle cx="170" cy="30" r="1.3"/><circle cx="214" cy="14" r="1"/>
-          <circle cx="248" cy="56" r="1.1"/><circle cx="286" cy="26" r="1.2"/><circle cx="326" cy="48" r="1"/>
-          <circle cx="344" cy="12" r=".9"/><circle cx="196" cy="74" r=".8"/><circle cx="76" cy="84" r=".8"/>
-        </g>
-        <g id="soleil" opacity="0">
-          <circle id="soleil-halo" r="30" fill="#ffd9a0" opacity=".28"/>
-          <circle id="soleil-disque" r="15" fill="#fff1b8"/>
-        </g>
-        <g id="lune" opacity="0">
-          <circle r="13" fill="#2a3558" opacity=".85"/>
-          <path id="lune-forme" fill="#f4f1e4" d=""/>
-        </g>
-        <g id="nuages" opacity="0.2" fill="#fff">
-          <g><ellipse cx="82" cy="62" rx="30" ry="9"/><ellipse cx="100" cy="55" rx="20" ry="9"/><ellipse cx="66" cy="57" rx="16" ry="7"/></g>
-          <g><ellipse cx="226" cy="44" rx="34" ry="10"/><ellipse cx="248" cy="36" rx="20" ry="9"/><ellipse cx="206" cy="39" rx="16" ry="7"/></g>
-          <g><ellipse cx="300" cy="86" rx="26" ry="8"/><ellipse cx="316" cy="80" rx="16" ry="7"/></g>
-        </g>
-        <rect id="mer" x="0" y="128" width="360" height="110" fill="url(#mer-grad)"/>
-        <g id="phare" fill="#3B4A32" opacity=".82">
-          <polygon points="296,128 304,128 302.5,99 297.5,99"/>
-          <rect x="296.5" y="93" width="7" height="6"/>
-          <polygon points="296,93 300,86 304,93"/>
-          <rect x="294" y="127" width="12" height="2"/>
-        </g>
-        <circle id="phare-feu" cx="300" cy="96" r="2.4" fill="#ffe9a8" opacity="0"/>
-        <g id="rivage" style="transform:translateY(190px)">
-          <g class="houle">
-            <path id="sable" fill="#E7DBBB" d=""/>
-            <path id="sable-humide" fill="none" stroke="#cdbd92" stroke-width="9" opacity=".55" d="" transform="translate(0 7)"/>
-            <path id="ecume" fill="none" stroke="#fbf9f3" stroke-width="1.6" opacity=".85" d=""/>
-          </g>
-        </g>
-        <g id="pluie" stroke="#ffffff" stroke-width="1" stroke-linecap="round" opacity="0"></g>
-        <g id="tremieres">
-          <path d="M26 232 C 24 214, 28 196, 25 172" stroke="#5C6F4F" stroke-width="2" fill="none"/>
-          <path d="M46 232 C 48 218, 44 204, 47 184" stroke="#5C6F4F" stroke-width="2" fill="none"/>
-          <path d="M338 232 C 340 216, 336 200, 339 180" stroke="#5C6F4F" stroke-width="2" fill="none"/>
-          <path d="M26 224 q-9 -3 -12 -10 q9 0 12 10z M46 226 q9 -3 12 -10 q-9 0 -12 10z M338 226 q-9 -3 -12 -10 q9 0 12 10z" fill="#5C6F4F"/>
-          <g fill="#C1587A">
-            <circle cx="25" cy="176" r="3" /><circle cx="26" cy="186" r="5.2"/><circle cx="24" cy="198" r="5.6"/><circle cx="26" cy="210" r="5"/>
-            <circle cx="47" cy="188" r="3.4"/><circle cx="46" cy="199" r="5.4"/><circle cx="48" cy="211" r="5"/>
-            <circle cx="339" cy="184" r="3.2"/><circle cx="338" cy="195" r="5.4"/><circle cx="340" cy="207" r="5"/>
-          </g>
-          <g fill="#e2a0b6">
-            <circle cx="24" cy="185" r="2"/><circle cx="46" cy="198" r="2"/><circle cx="337" cy="194" r="2"/><circle cx="25" cy="197" r="2"/>
-          </g>
-          <g fill="#3B4A32">
-            <circle cx="26" cy="186" r="1.1"/><circle cx="24" cy="198" r="1.1"/><circle cx="26" cy="210" r="1.1"/>
-            <circle cx="46" cy="199" r="1.1"/><circle cx="48" cy="211" r="1.1"/><circle cx="338" cy="195" r="1.1"/><circle cx="340" cy="207" r="1.1"/>
-          </g>
-        </g>
-      </svg>
-      <div class="scene-live"><i></i><span id="scene-heure">en direct</span></div>
+    <div class="webcam-carte">
+      <div class="ratio">
+        <iframe src="https://www.skaping.com/rivedoux-plage-nord/video" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="webcam-credit">webcam Skaping</div>
     </div>
     <h2 class="maintenant-titre" id="maintenant-titre">La mer, le ciel, un instant…</h2>
     <p class="maintenant-texte" id="maintenant-texte"></p>
@@ -851,33 +788,6 @@
     <p class="plan-note" id="plan-note"></p>
   </section>
 
-
-  <div class="tremiere">
-    <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
-      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
-      <g fill="#C1587A">
-        <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
-        <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
-        <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
-      </g>
-      <g fill="#3B4A32">
-        <circle cx="30" cy="19" r="1.6"/><circle cx="95" cy="15" r="1.8"/><circle cx="165" cy="10" r="1.6"/>
-      </g>
-    </svg>
-  </div>
-
-  <!-- ================= WEBCAM ================= -->
-  <section id="webcam">
-    <div class="section-head">
-      <h2 class="section-title">Rivedoux — Plage Nord en direct</h2>
-    </div>
-    <div class="webcam-carte">
-      <div class="ratio">
-        <iframe src="https://www.skaping.com/rivedoux-plage-nord/video" allowfullscreen loading="lazy"></iframe>
-      </div>
-      <div class="webcam-credit">webcam Skaping</div>
-    </div>
-  </section>
 
   <div class="tremiere">
     <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
@@ -2096,8 +2006,6 @@
     const nuages = (M && iHeure >= 0 && M.hourly.cloud_cover) ? M.hourly.cloud_cover[iHeure] : 20;
     const min = minDuJour(now);
 
-    dessinerScene({min, sr, ss, nuages, lune, maree: mt, pluie: CODES_PLUIE.includes(code)});
-    document.getElementById('scene-heure').textContent = 'en direct · ' + hhmm(now);
 
     // titre
     let titre = 'La mer, le ciel, un instant…';
