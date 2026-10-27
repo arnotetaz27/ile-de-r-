@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>L'Écho du Bois — Île de Ré</title>
 <link rel="apple-touch-icon" href="icon.png">
+<meta name="theme-color" content="#0F2530">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="L'Écho du Bois">
@@ -12,14 +13,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --blanc-chaux:#FBF9F3;
-    --vert-re:#5C6F4F;
-    --vert-re-dark:#3B4A32;
-    --rose-tremiere:#C1587A;
-    --bleu-marais:#33566A;
-    --sable:#E7DBBB;
-    --encre:#26302B;
-    --ombre: rgba(38,48,43,0.08);
+    --blanc-chaux:#0F2530;
+    --vert-re:#E9B44C;
+    --vert-re-dark:#F3E9D2;
+    --rose-tremiere:#FF8FAB;
+    --bleu-marais:#7FC8D6;
+    --sable:#27465A;
+    --encre:#E8E2D0;
+    --ombre: rgba(0,0,0,0.28);
+    --carte:#163545;
+    color-scheme:dark;
   }
   *{box-sizing:border-box;}
   body{
@@ -37,7 +40,7 @@
     text-align:center;
     border-bottom:3px solid var(--vert-re);
     background:
-      radial-gradient(ellipse at top, rgba(92,111,79,0.06), transparent 70%);
+      radial-gradient(ellipse at top, rgba(233,180,76,0.10), transparent 70%);
   }
   .eyebrow{
     font-family:'IBM Plex Mono', monospace;
@@ -58,7 +61,7 @@
   }
   .soustitre{
     font-size:14px;
-    color:#5b6259;
+    color:#A9BAC0;
     max-width:420px;
     margin:0 auto;
   }
@@ -103,7 +106,7 @@
   }
   .section-note{
     font-size:12.5px;
-    color:#77806f;
+    color:#8FA3AB;
     margin:-8px 0 16px 0;
   }
 
@@ -119,7 +122,7 @@
     cursor:pointer;
     flex:0 0 auto;
     width:96px;
-    background:#fff;
+    background:var(--carte);
     border:1px solid var(--sable);
     border-radius:14px;
     padding:14px 8px;
@@ -133,10 +136,10 @@
     letter-spacing:.06em;
     color:var(--bleu-marais);
   }
-  .jour-carte .jour-date{font-size:10px;color:#8b9186;margin-bottom:6px;}
+  .jour-carte .jour-date{font-size:10px;color:#8196A0;margin-bottom:6px;}
   .jour-carte .icone{font-size:28px;margin:4px 0;}
   .jour-carte .temps{font-size:13px;font-weight:600;}
-  .jour-carte .tmin{color:#8b9186;font-weight:400;}
+  .jour-carte .tmin{color:#8196A0;font-weight:400;}
   .jour-carte .pluie{
     font-family:'IBM Plex Mono', monospace;
     font-size:10.5px;
@@ -144,14 +147,14 @@
     margin-top:6px;
   }
   .meteo-loading, .actus-loading, .maree-loading{
-    font-size:13px;color:#8b9186;font-style:italic;
+    font-size:13px;color:#8196A0;font-style:italic;
   }
 
   /* ---------- MAREES ---------- */
   .maree-carte{
     flex:0 0 auto;
     width:118px;
-    background:#fff;
+    background:var(--carte);
     border:1px solid var(--sable);
     border-radius:14px;
     padding:14px 10px;
@@ -165,7 +168,7 @@
     letter-spacing:.06em;
     color:var(--bleu-marais);
   }
-  .maree-carte .jour-date{font-size:10px;color:#8b9186;margin-bottom:8px;}
+  .maree-carte .jour-date{font-size:10px;color:#8196A0;margin-bottom:8px;}
   .maree-event{
     display:flex;
     justify-content:space-between;
@@ -190,7 +193,7 @@
 
   /* ---------- LA MARTINIERE ---------- */
   .martiniere-carte{
-    background:#fff;
+    background:var(--carte);
     border:1px solid var(--sable);
     border-radius:14px;
     padding:18px 20px;
@@ -208,7 +211,7 @@
   }
   .martiniere-genre{
     font-size:12px;
-    color:#77806f;
+    color:#8FA3AB;
     margin-top:2px;
   }
   .martiniere-statut{
@@ -239,7 +242,7 @@
     flex-direction:column;
     align-items:center;
     gap:6px;
-    background:#fff;
+    background:var(--carte);
     border:1px solid var(--sable);
     border-radius:14px;
     padding:20px 14px;
@@ -264,7 +267,7 @@
   .resto-carte{
     position:relative;
     display:block;
-    background:#fff;
+    background:var(--carte);
     border:1px solid var(--sable);
     border-radius:14px;
     padding:14px;
@@ -283,7 +286,7 @@
   }
   .resto-ville{
     font-size:11.5px;
-    color:#77806f;
+    color:#8FA3AB;
     margin-top:3px;
   }
   .resto-statut{
@@ -375,7 +378,7 @@
     border-radius:14px;
     overflow:hidden;
     box-shadow:0 2px 0 var(--ombre);
-    background:#fff;
+    background:var(--carte);
   }
   .webcam-carte .ratio{
     position:relative;
@@ -391,7 +394,7 @@
   .webcam-credit{
     font-family:'IBM Plex Mono', monospace;
     font-size:10.5px;
-    color:#8b9186;
+    color:#8196A0;
     padding:8px 12px;
     text-align:right;
   }
@@ -401,7 +404,7 @@
     border-radius:14px;
     overflow:hidden;
     box-shadow:0 2px 0 var(--ombre);
-    background:#fff;
+    background:var(--carte);
   }
   .widget-carte iframe{
     width:100%;
@@ -480,7 +483,7 @@
   }
   .event-lieu{
     font-size:10.5px;
-    color:#77806f;
+    color:#8FA3AB;
   }
   @media (max-width:380px){
     .actus-events-grid{grid-template-columns:1fr;gap:26px;}
@@ -518,7 +521,7 @@
     margin-top:40px;
     text-align:center;
     font-size:11.5px;
-    color:#9aa093;
+    color:#8196A0;
     font-family:'IBM Plex Mono', monospace;
   }
 
@@ -547,7 +550,7 @@
     position:absolute;left:12px;top:12px;
     display:flex;align-items:center;gap:6px;
     font-family:'IBM Plex Mono', monospace;font-size:11px;
-    background:rgba(251,249,243,.9);color:var(--vert-re-dark);
+    background:rgba(15,37,48,.82);color:var(--vert-re-dark);
     padding:4px 10px 4px 9px;border-radius:20px;
   }
   .scene-live i{width:7px;height:7px;border-radius:50%;background:#00E676;animation:pouls 2s ease-in-out infinite;}
@@ -561,17 +564,17 @@
     margin:20px 0 8px;
     text-wrap:balance;
   }
-  .maintenant-texte{margin:0 0 16px;font-size:14.5px;line-height:1.5;color:#4b5650;}
+  .maintenant-texte{margin:0 0 16px;font-size:14.5px;line-height:1.5;color:#BCCACE;}
   .astres{
     display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;
-    font-size:13px;line-height:1.35;color:#4b5650;
+    font-size:13px;line-height:1.35;color:#BCCACE;
     padding:12px 14px;margin-bottom:12px;
-    background:rgba(231,219,187,.38);border-radius:14px;
+    background:rgba(233,180,76,.10);border-radius:14px;
   }
   .astres b{font-weight:600;color:var(--vert-re-dark);}
   .bons-plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .plan-carte{
-    background:#fff;border:1px solid var(--sable);border-radius:14px;
+    background:var(--carte);border:1px solid var(--sable);border-radius:14px;
     padding:13px 14px 12px;box-shadow:0 2px 0 var(--ombre);
     display:flex;flex-direction:column;gap:5px;min-height:118px;
   }
@@ -579,13 +582,13 @@
   .plan-pastille{width:9px;height:9px;border-radius:50%;flex:none;}
   .plan-fleche{width:14px;height:14px;flex:none;transition:transform .8s ease;}
   .plan-verdict{font-family:'Fraunces', serif;font-weight:600;font-size:19px;line-height:1.15;color:var(--vert-re-dark);}
-  .plan-detail{font-size:12px;line-height:1.4;color:#77806f;margin-top:auto;}
-  .plan-note{font-size:11.5px;color:#9aa093;margin:10px 2px 0;line-height:1.4;}
+  .plan-detail{font-size:12px;line-height:1.4;color:#8FA3AB;margin-top:auto;}
+  .plan-note{font-size:11.5px;color:#8196A0;margin:10px 2px 0;line-height:1.4;}
   @media (prefers-reduced-motion:reduce){
     .houle,#pluie,.scene-live i{animation:none;}
     #rivage,.plan-fleche{transition:none;}
   }
-  .event-vide{font-size:12.5px;color:#77806f;line-height:1.45;}
+  .event-vide{font-size:12.5px;color:#8FA3AB;line-height:1.45;}
 </style>
 </head>
 <body>
@@ -680,13 +683,13 @@
 
   <div class="tremiere">
     <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
-      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
-      <g fill="#C1587A">
+      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#E9B44C" stroke-width="1.4" fill="none"/>
+      <g fill="#FF8FAB">
         <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
         <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
         <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
       </g>
-      <g fill="#3B4A32">
+      <g fill="#0F2530">
         <circle cx="30" cy="19" r="1.6"/><circle cx="95" cy="15" r="1.8"/><circle cx="165" cy="10" r="1.6"/>
       </g>
     </svg>
@@ -707,13 +710,13 @@
 
   <div class="tremiere">
     <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
-      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
-      <g fill="#C1587A">
+      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#E9B44C" stroke-width="1.4" fill="none"/>
+      <g fill="#FF8FAB">
         <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
         <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
         <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
       </g>
-      <g fill="#3B4A32">
+      <g fill="#0F2530">
         <circle cx="30" cy="19" r="1.6"/><circle cx="95" cy="15" r="1.8"/><circle cx="165" cy="10" r="1.6"/>
       </g>
     </svg>
@@ -732,7 +735,7 @@
 
   <div class="tremiere">
     <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
-      <path d="M2 16 C 40 28, 80 8, 110 20 S 180 30, 218 12" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <path d="M2 16 C 40 28, 80 8, 110 20 S 180 30, 218 12" stroke="#E9B44C" stroke-width="1.4" fill="none"/>
       <g fill="#C1587A">
         <circle cx="45" cy="22" r="3.6"/><circle cx="75" cy="12" r="4.4"/>
         <circle cx="115" cy="19" r="3.4"/><circle cx="150" cy="26" r="4.2"/>
@@ -754,7 +757,7 @@
 
   <div class="tremiere">
     <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
-      <path d="M2 16 C 40 28, 80 8, 110 20 S 180 30, 218 12" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <path d="M2 16 C 40 28, 80 8, 110 20 S 180 30, 218 12" stroke="#E9B44C" stroke-width="1.4" fill="none"/>
       <g fill="#C1587A">
         <circle cx="45" cy="22" r="3.6"/><circle cx="75" cy="12" r="4.4"/>
         <circle cx="115" cy="19" r="3.4"/><circle cx="150" cy="26" r="4.2"/>
@@ -780,13 +783,13 @@
 
   <div class="tremiere">
     <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
-      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
-      <g fill="#C1587A">
+      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#E9B44C" stroke-width="1.4" fill="none"/>
+      <g fill="#FF8FAB">
         <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
         <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
         <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
       </g>
-      <g fill="#3B4A32">
+      <g fill="#0F2530">
         <circle cx="30" cy="19" r="1.6"/><circle cx="95" cy="15" r="1.8"/><circle cx="165" cy="10" r="1.6"/>
       </g>
     </svg>
@@ -811,7 +814,7 @@
 
   <div class="tremiere">
     <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
-      <path d="M2 16 C 40 28, 80 8, 110 20 S 180 30, 218 12" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
+      <path d="M2 16 C 40 28, 80 8, 110 20 S 180 30, 218 12" stroke="#E9B44C" stroke-width="1.4" fill="none"/>
       <g fill="#C1587A">
         <circle cx="45" cy="22" r="3.6"/><circle cx="75" cy="12" r="4.4"/>
         <circle cx="115" cy="19" r="3.4"/><circle cx="150" cy="26" r="4.2"/>
@@ -831,13 +834,13 @@
 
   <div class="tremiere">
     <svg width="220" height="34" viewBox="0 0 220 34" fill="none">
-      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#5C6F4F" stroke-width="1.4" fill="none"/>
-      <g fill="#C1587A">
+      <path d="M2 30 C 40 10, 80 26, 110 14 S 180 4, 218 16" stroke="#E9B44C" stroke-width="1.4" fill="none"/>
+      <g fill="#FF8FAB">
         <circle cx="30" cy="19" r="4.2"/><circle cx="60" cy="24" r="3.4"/>
         <circle cx="95" cy="15" r="4.6"/><circle cx="130" cy="12" r="3.6"/>
         <circle cx="165" cy="10" r="4.2"/><circle cx="195" cy="14" r="3.4"/>
       </g>
-      <g fill="#3B4A32">
+      <g fill="#0F2530">
         <circle cx="30" cy="19" r="1.6"/><circle cx="95" cy="15" r="1.8"/><circle cx="165" cy="10" r="1.6"/>
       </g>
     </svg>
@@ -1440,6 +1443,8 @@
       $('lune-forme').setAttribute('d', formeLune(o.lune.p, 13));
     }
 
+    $('sable').setAttribute('fill', melange('#E7DBBB', '#5d6264', pal.nuit*.85));
+    $('sable-humide').setAttribute('stroke', melange('#cdbd92', '#4a5054', pal.nuit*.85));
     $('phare-feu').setAttribute('opacity', pal.nuit > .5 ? 1 : 0);
     $('pluie').setAttribute('opacity', o.pluie ? .55 : 0);
     const y = 214 - 66 * (o.maree ? o.maree.norm : .5);
@@ -1555,7 +1560,7 @@
       const c = document.createElement('div');
       c.className = 'plan-carte';
       const marque = p.fleche != null
-        ? `<svg class="plan-fleche" viewBox="0 0 14 14" style="transform:rotate(${(p.fleche + 180) % 360}deg)" aria-hidden="true"><path d="M7 1 L11 12 L7 9.6 L3 12 Z" fill="#33566A"/></svg>`
+        ? `<svg class="plan-fleche" viewBox="0 0 14 14" style="transform:rotate(${(p.fleche + 180) % 360}deg)" aria-hidden="true"><path d="M7 1 L11 12 L7 9.6 L3 12 Z" fill="#7FC8D6"/></svg>`
         : `<span class="plan-pastille" style="background:${COULEURS_NIVEAU[p.niveau]}"></span>`;
       c.innerHTML = `
         <div class="plan-titre">${marque}${p.titre}</div>
